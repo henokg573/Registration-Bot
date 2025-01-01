@@ -68,21 +68,16 @@ from telebot import types
 
 bot = telebot.TeleBot(API_KEY)
 
-# Function to run the Telegram bot
-def start_telegram_bot():
-    print("Starting Telegram bot...")
-    bot.polling()
-
 # Define the bot's handlers
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     print(f"Received /start from {message.chat.id}")  # Debugging
 
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    btn1 = types.KeyboardButton('About Us')
-    btn2 = types.KeyboardButton('Our Services')
-    btn3 = types.KeyboardButton('Continue to Register')
-    btn4 = types.KeyboardButton('Feedback')
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    btn1 = telebot.types.KeyboardButton('About Us')
+    btn2 = telebot.types.KeyboardButton('Our Services')
+    btn3 = telebot.types.KeyboardButton('Continue to Register')
+    btn4 = telebot.types.KeyboardButton('Feedback')
     markup.add(btn1, btn2, btn3, btn4)
 
     bot.reply_to(
@@ -119,7 +114,6 @@ If you need a guide on how to use our services, we have prepared a tour guide he
 # Function to run the Telegram bot
 def start_telegram_bot():
     print("Starting Telegram bot...")
-    bot.polling()
     bot.polling(none_stop=True, interval=0)
 
 # Function to start the dummy HTTP server
@@ -140,9 +134,6 @@ if __name__ == "__main__":
     # Keep the main thread alive
     while True:
         pass
-
-    
-
     
     # Guide Command
 @bot.message_handler(commands=['guide'])
@@ -532,16 +523,4 @@ def payment_markup():
 
 
 
-# Function to start the dummy HTTP server
-def start_dummy_server():
-    PORT = 8000
-    Handler = http.server.SimpleHTTPRequestHandler
-    with socketserver.TCPServer(("", PORT), Handler) as httpd:
-        print(f"Serving on port {PORT}")
-        httpd.serve_forever()
-if __name__ == "__main__":
-    # Start the dummy server in a separate thread
-    threading.Thread(target=start_dummy_server, daemon=True).start()
 
-    # Start the Telegram bot
-    start_telegram_bot()
