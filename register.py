@@ -329,7 +329,9 @@ def collect_email(message):
         bot.register_next_step_handler(message, collect_email)
         return
     user_data['email'] = email
-    bot.send_message(chat_id, "Thank you! Now, please select a payment method or submit your receipt.", reply_markup=payment_markup())
+    bot.send_message(chat_id, """Thank you! Now, please select a payment method or submit your receipt.
+                     and write your name on the file format or when you send a file, write your name on it or rename the file as your name.
+                     for example, JohnDoe.jp for images or JohnDoe.pdf for pdf files""", reply_markup=payment_markup())
 
 
 
