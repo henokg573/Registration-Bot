@@ -18,16 +18,27 @@ bot = telebot.TeleBot(API_KEY)
 
 import http.server
 import socketserver
+import threading
 
-# Dummy HTTP server to bind to a port
-PORT = 8000
 
-class Handler(http.server.SimpleHTTPRequestHandler):
-    pass
+# Function to run the Telegram bot
+def start_telegram_bot():
+    print("Starting Telegram bot...")
+    bot.polling()
+    
+# Function to start the dummy HTTP server
+def start_dummy_server():
+    PORT = 8000
+    Handler = http.server.SimpleHTTPRequestHandler
+    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+        print(f"Serving on port {PORT}")
+        httpd.serve_forever()
+if __name__ == "__main__":
+    # Start the dummy server in a separate thread
+    threading.Thread(target=start_dummy_server, daemon=True).start()
 
-with socketserver.TCPServer(("", PORT), Handler) as httpd:
-    print(f"Serving on port {PORT}")
-    httpd.serve_forever()
+    # Start the Telegram bot
+    start_telegram_bot()
 
 
 
@@ -60,6 +71,22 @@ app = Flask(__name__)
 #         bot.infinity_polling()
 #     except Exception as e:
 #         print(f"Error: {e}")
+import http.server
+import socketserver
+import threading
+import telebot
+from telebot import types
+
+# Telegram bot token
+
+bot = telebot.TeleBot(API_KEY)
+
+# Function to run the Telegram bot
+def start_telegram_bot():
+    print("Starting Telegram bot...")
+    bot.polling()
+
+# Define the bot's handlers
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     print(f"Received /start from {message.chat.id}")  # Debugging
@@ -67,40 +94,57 @@ def send_welcome(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     btn1 = types.KeyboardButton('About Us')
     btn2 = types.KeyboardButton('Our Services')
-    btn3 = types.KeyboardButton('Continue to  Register')
+    btn3 = types.KeyboardButton('Continue to Register')
     btn4 = types.KeyboardButton('Feedback')
     markup.add(btn1, btn2, btn3, btn4)
-    # markup.add(btn12, btn13, btn14, btn15)
-
 
     bot.reply_to(
         message,
         f"""👋 Hi {message.chat.first_name}! 
         👋 Welcome to EasyGate!, 
-        welcome to Your 
-                        \t\t\t\t\tGateway to Global Opportunities.
-                        \t\t\t\t\tSimplifying Your Path to Success.
-                        \t\t\t\t\tFrom Dreams to Destinations.
-                        \t\t\t\t\tOpen Doors, Easy Journeys.
+        Welcome to Your Gateway to Global Opportunities.
+        
+        Simplifying Your Path to Success.
+        From Dreams to Destinations.
+        Open Doors, Easy Journeys.
+
 We’re thrilled to have you here! 🎉
 
 At EasyGate, we specialize in making your goals more accessible, whether it’s education, travel, or career growth. Here's what we can help you with:
-             Scholarship and admission opportunities
-             Passport and visa applications
-             International career and e-commerce services
-             Embassy appointments and travel consultancy
-             Online courses and proficiency tests
+- Scholarship and admission opportunities
+- Passport and visa applications
+- International career and e-commerce services
+- Embassy appointments and travel consultancy
+- Online courses and proficiency tests
 
 Let us guide you every step of the way! Simply explore the options below and get started on your journey with us.
 
 Feel free to reach out if you have any questions—we’re here to make things easy for you!
-        \n\nwe are currently on registration period and you can continue to register or see our services. 
-        if you need help, please typle /help
-        if you need to contact us, use this commant /contact
-        if you need guide how to use our services, we have prepared tour guide her /guide
+
+We are currently in the registration period. You can continue to register or see our services. 
+If you need help, please type /help.
+If you need to contact us, use the command /contact.
+If you need a guide on how to use our services, we have prepared a tour guide here: /guide.
         """,
-        reply_markup=markup,    
+        reply_markup=markup,
     )
+
+# Function to start the dummy HTTP server
+def start_dummy_server():
+    PORT = 8000
+    Handler = http.server.SimpleHTTPRequestHandler
+    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+        print(f"Serving on port {PORT}")
+        httpd.serve_forever()
+
+if __name__ == "__main__":
+    # Start the dummy server in a separate thread
+    threading.Thread(target=start_dummy_server, daemon=True).start()
+
+    # Start the Telegram bot
+    start_telegram_bot()
+
+    
 
     
     # Guide Command
