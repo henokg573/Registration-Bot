@@ -129,9 +129,14 @@ If you need a guide on how to use our services, we have prepared a tour guide he
         reply_markup=markup,
     )
 
+# Function to run the Telegram bot
+def start_telegram_bot():
+    print("Starting Telegram bot...")
+    bot.polling()
+
 # Function to start the dummy HTTP server
 def start_dummy_server():
-    PORT = 8000
+    PORT = 9090  # Change to a different port if needed
     Handler = http.server.SimpleHTTPRequestHandler
     with socketserver.TCPServer(("", PORT), Handler) as httpd:
         print(f"Serving on port {PORT}")
@@ -141,8 +146,12 @@ if __name__ == "__main__":
     # Start the dummy server in a separate thread
     threading.Thread(target=start_dummy_server, daemon=True).start()
 
-    # Start the Telegram bot
-    start_telegram_bot()
+    # Start the Telegram bot in a separate thread
+    threading.Thread(target=start_telegram_bot, daemon=True).start()
+
+    # Keep the main thread alive
+    while True:
+        pass
 
     
 
