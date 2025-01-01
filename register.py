@@ -16,7 +16,18 @@ ADMIN_CHAT_ID = "793034140"
 bot = telebot.TeleBot(API_KEY)
 
 
+import http.server
+import socketserver
 
+# Dummy HTTP server to bind to a port
+PORT = 8000
+
+class Handler(http.server.SimpleHTTPRequestHandler):
+    pass
+
+with socketserver.TCPServer(("", PORT), Handler) as httpd:
+    print(f"Serving on port {PORT}")
+    httpd.serve_forever()
 
 
 
@@ -39,7 +50,7 @@ from telebot import types
 bot = telebot.TeleBot(API_KEY)
 
 
-ADMIN_CHAT_ID = '793034140'  # You should use your actual chat ID here
+ADMIN_CHAT_ID = '793034140'  # Admin chat id from telegram
 
 # Initialize the Flask app
 
@@ -147,8 +158,8 @@ def handle_options(message):
     At EasyGate, we're dedicated to guiding you through every step of your global journey, whether it's education, work, or travel. Let us help you unlock your future, right from the comfort of your home!.
     Stay connected with us on our social media platforms to explore our services further:
 
-     Telegram: [@easygate](https://t.me/easygate)
-     WhatsApp: [0964255107](https://wa.me/0964255107)
+     Telegram: @easygate or https://t.me/easygate
+     WhatsApp: 0964255107 or https://wa.me/0964255107
      Email: contact.easygate@gmail.com
 
     Feel free to contact us via any of the platforms above for more information or to get started! 
