@@ -15,115 +15,10 @@ ADMIN_CHAT_ID = "793034140"
 # ADMIN_CHAT_ID  = os.getenv("ADMIN_CHAT_Id"")
 bot = telebot.TeleBot(API_KEY)
 
-# # Delete any active webhook
-bot.remove_webhook()
-# print("Webhook removed. Starting polling...")
 
 
-# app = Flask(__name__)
-# TELEGRAM_API_URL = f"https://api.telegram.org/bot{API_KEY}/setWebhook"
-# WEBHOOK_HOST = 'https://registration-bot.onrender.com'
-# WEBHOOK_PATH = f'webhook/{API_KEY}'
-# DB_URL = 'postgresql://easygate_db_user:EezQHIycha07Xfq6DVHS7QLbt7D0BiLo@dpg-ctn8ont2ng1s73bi6ir0-a.oregon-postgres.render.com/easygate_db'
-# WEBHOOK_URL = f'{WEBHOOK_HOST}/{WEBHOOK_PATH}'
-# WEBAPP_HOST = '0.0.0.0'
 
 
-# # Set Webhook
-# bot.remove_webhook()
-# bot.set_webhook(url=WEBHOOK_URL)
-
-
-# @app.route(f'/{WEBHOOK_PATH}', methods=['POST'])
-# def webhook():
-#     json_string = request.get_data().decode('utf-8')
-#     update = telebot.types.Update.de_json(json_string)
-#     bot.process_new_updates([update])
-#     return "!", 200
-# if __name__ == "__main__":
-#     app.run(host=WEBAPP_HOST, port=5000)
-# @app.route('/webhook/7759515826:AAFKPIz6SVVBT8Owvk9cVW4yema2alXjtII', methods=['POST'])
-# def telegram_webhook():
-#     from flask import request
-#     import telebot
-
-#     json_data = request.get_json()
-#     bot = telebot.TeleBot(API_KEY)
-
-#     if json_data:
-#         update = telebot.types.Update.de_json(json_data)
-#         bot.process_new_updates([update])
-
-#     return "OK", 200
-
-# app = Flask(__name__)
-
-# # Use environment variables for sensitive data
-# # API_KEY = os.getenv("API_KEY")
-# # DB_URL = os.getenv("DB_URL")
-
-# WEBHOOK_HOST = 'https://registration-bot.onrender.com'
-# WEBHOOK_PATH = f'webhook/{API_KEY}'
-# WEBHOOK_URL = f'{WEBHOOK_HOST}/{WEBHOOK_PATH}'
-# WEBAPP_HOST = '0.0.0.0'
-
-# bot.delete_webhook()
-# bot.set_webhook(url=WEBHOOK_URL)
-
-
-# # Initialize the bot
-# bot = telebot.TeleBot(API_KEY)
-
-# # Set Webhook only if it's not already set
-# if not bot.get_webhook_info().url:
-#     bot.set_webhook(url=WEBHOOK_URL)
-
-
-# @app.route(f'/{WEBHOOK_PATH}', methods=['POST'])
-# def webhook():
-#     try:
-#         json_string = request.get_data().decode('utf-8')
-#         update = telebot.types.Update.de_json(json_string)
-#         bot.process_new_updates([update])
-#         return "OK", 200
-#     except Exception as e:
-#         print(f"Error processing webhook: {e}")
-#         return "Internal Server Error", 500
-
-
-# if __name__ == "__main__":
-#     app.run(host=WEBAPP_HOST, port=5000, debug=True)  # For local testing
-
-app = Flask(__name__)
-    
-
-# Define a route for the webhook
-# @app.route('/webhook', methods=['POST'])
-# def webhook():
-#     json_str = request.get_data().decode('UTF-8')
-#     update = telebot.types.Update.de_json(json_str)
-#     bot.process_new_updates([update])
-#     return "OK"
-
-# Set up a basic handler for bot messages
-# Remove duplicate echo_all handler
-
-# Set the webhook (replace with your own webhook URL)
-# bot.remove_webhook()
-# bot.set_webhook(url='https://2943-185-182-193-115.ngrok-free.app')
-
-# if __name__ == "__main__":
-#     app.run(debug=True)
-# @bot.message_handler(func=lambda message: True)
-# def echo_all(message):
-#     print(f"Received message: {message.text}")
-#     bot.reply_to(message, message.text)
-
-if __name__ == "__main__":
-    try:
-        bot.infinity_polling()
-    except Exception as e:
-        print(f"Error: {e}")
 
 
 import email
@@ -139,21 +34,21 @@ import os
 from telebot.types import ForceReply
 import telegram
 from telebot import types
-# from keep_alive import keep_alive
-# keep_alive()
 
 
-
-# Replace with your API key
-# API_KEY = '7759515826:AAG9onLgiHUc9Gl8kSJLbpeaGbui351Nx-A'
 bot = telebot.TeleBot(API_KEY)
 
-# Admin's chat ID (replace with the actual admin chat ID)
+
 ADMIN_CHAT_ID = '793034140'  # You should use your actual chat ID here
 
-# bot = telebot.TeleBot(token=os.environ.get("API_KEY"))
+# Initialize the Flask app
 
 app = Flask(__name__)
+# if __name__ == "__main__":
+#     try:
+#         bot.infinity_polling()
+#     except Exception as e:
+#         print(f"Error: {e}")
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     print(f"Received /start from {message.chat.id}")  # Debugging
@@ -584,5 +479,5 @@ def payment_markup():
 
 # Start the bot
 if __name__ == "__main__":
-    bot.infinity_polling()
+    bot.polling()
     print("Bot is running...")
