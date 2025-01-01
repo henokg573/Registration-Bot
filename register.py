@@ -142,6 +142,9 @@ def send_guide(message):
 Explore and simplify your journey with EasyGate! 🌟""", reply_markup = main_menu_markup()
     )
 
+
+
+
  # Help Command
 @bot.message_handler(commands=['help'])
 @bot.message_handler(func=lambda message: message.text == "Help")
@@ -516,7 +519,9 @@ def payment_markup():
 
 
 
-# Function to run the Telegram bot
-def start_telegram_bot():
-    print("Starting Telegram bot...")
-    bot.polling(none_stop=True, interval=0)
+if __name__ == "__main__":
+    # Start the dummy server in a separate thread
+    threading.Thread(target=start_dummy_server, daemon=True).start()
+
+    # Start the Telegram bot
+    start_telegram_bot()
