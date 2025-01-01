@@ -26,19 +26,6 @@ def start_telegram_bot():
     print("Starting Telegram bot...")
     bot.polling()
     
-# Function to start the dummy HTTP server
-def start_dummy_server():
-    PORT = 8000
-    Handler = http.server.SimpleHTTPRequestHandler
-    with socketserver.TCPServer(("", PORT), Handler) as httpd:
-        print(f"Serving on port {PORT}")
-        httpd.serve_forever()
-if __name__ == "__main__":
-    # Start the dummy server in a separate thread
-    threading.Thread(target=start_dummy_server, daemon=True).start()
-
-    # Start the Telegram bot
-    start_telegram_bot()
 
 
 
@@ -133,6 +120,7 @@ If you need a guide on how to use our services, we have prepared a tour guide he
 def start_telegram_bot():
     print("Starting Telegram bot...")
     bot.polling()
+    bot.polling(none_stop=True, interval=0)
 
 # Function to start the dummy HTTP server
 def start_dummy_server():
@@ -543,7 +531,17 @@ def payment_markup():
 
 
 
-# Start the bot
+
+# Function to start the dummy HTTP server
+def start_dummy_server():
+    PORT = 8000
+    Handler = http.server.SimpleHTTPRequestHandler
+    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+        print(f"Serving on port {PORT}")
+        httpd.serve_forever()
 if __name__ == "__main__":
-    bot.polling()
-    print("Bot is running...")
+    # Start the dummy server in a separate thread
+    threading.Thread(target=start_dummy_server, daemon=True).start()
+
+    # Start the Telegram bot
+    start_telegram_bot()
