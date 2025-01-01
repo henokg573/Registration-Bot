@@ -523,4 +523,7 @@ def payment_markup():
 
 
 
-
+# Function to run the Telegram bot
+def start_telegram_bot():
+    print("Starting Telegram bot...")
+    bot.polling(none_stop=True, interval=0)
