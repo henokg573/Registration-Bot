@@ -121,12 +121,7 @@ def start_dummy_server():
         print(f"Serving on port {PORT}")
         httpd.serve_forever()
 
-if __name__ == "__main__":
-    # Start the dummy server in a separate thread
-    threading.Thread(target=start_dummy_server, daemon=True).start()
 
-    # Start the Telegram bot
-    start_telegram_bot()
     
     # Guide Command
 @bot.message_handler(commands=['guide'])
