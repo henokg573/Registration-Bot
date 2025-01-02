@@ -15,9 +15,13 @@ from fastapi import HTTPException
 # Correctly define the app instance
 fastapi_app = FastAPI()
 
-# API keys and admin chat ID
-API_KEY = "7759515826:AAG9Gl8kSJLbpeaGbui351Nx-A"
-ADMIN_CHAT_ID = "793034140"
+import os
+
+API_KEY = os.getenv("API_KEY")
+ADMIN_CHAT_ID = os.getenv("ADMIN_CHAT_ID")
+# # API keys and admin chat ID
+# API_KEY = "7759515826:AAG9Gl8kSJLbpeaGbui351Nx-A"
+# ADMIN_CHAT_ID = "793034140"
 
 # Initialize Telebot and Flask app
 telebot_instance = TeleBot(API_KEY)
