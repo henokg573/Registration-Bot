@@ -98,7 +98,7 @@ async def aiogram_start(message: aio_types.Message):
     btn3 = types.KeyboardButton('Continue to Register')
     btn4 = types.KeyboardButton('Feedback')
     btn5 = types.KeyboardButton('Already Registered?')
-    markup.add(btn1, btn2, btn3, btn4, btn5)
+    markup.add(btn1, btn2, btn3, btn4,btn5)
 
     telebot_instance.reply_to(
         message,
@@ -130,6 +130,120 @@ If you need a guide on how to use our services, we have prepared a tour guide he
         """,
         reply_markup=markup,
     )
+    if message.text == "About Us":
+        telebot_instance.reply_to(
+        message,
+        Welcome to EasyGate! 
+
+    We are a team of young Ethiopians, currently studying and working across the globe. Our mission is to simplify the process of accessing international education and career opportunities by reducing costs and eliminating the need for expensive intermediaries. 
+
+    We aim to make services that can be accessed easily from home, such as visa applications, scholarship opportunities, and career guidance, more affordable and accessible to you.
+
+    At EasyGate, we're dedicated to guiding you through every step of your global journey, whether it's education, work, or travel. Let us help you unlock your future, right from the comfort of your home!.
+    Stay connected with us on our social media platforms to explore our services further:
+
+     Telegram: @easygate or https://t.me/easygate
+     WhatsApp: 0964255107 or https://wa.me/0964255107
+     Email: contact.easygate@gmail.com
+
+    Feel free to contact us via any of the platforms above for more information or to get started! 
+    """, reply_markup = main_menu_markup())
+    elif message.text == "Our Services":
+        telebot_instance.reply_to(
+        message,
+        """ Our Services:
+    1️⃣ Embassy Interview Assistance
+    2️⃣ Document Review
+    3️⃣ Travel Advice
+    4️⃣ Visa Application Assistance
+    5️⃣ Scholarship Opportunities
+    6️⃣ English Proficiency Test Preparation
+    7️⃣ Passport Services
+    8️⃣ E-Visa Applications
+    9️⃣ International Payments
+    🔟 International Career Opportunities
+    1️⃣1️⃣ Recommend Educational Travel Consultancies
+    1️⃣2️⃣ Assistance with Any Embassy Interview Practice
+    1️⃣3️⃣ Other Services
+
+📞 Contact us to learn more.""", reply_markup = main_menu_markup())
+
+    elif message.text == "Continue to  Register":
+        telebot_instance.reply_to(
+        message,
+            """To register, we offer three ways, you can register through
+            our google form link, you can contact us and register, and you can register through our bot.
+            please choose one of the options below to continue.""", reply_markup = register_markup())
+
+    elif message.text == "Feedback":
+        telebot_instance.reply_to(
+        message,
+            """We value your feedback!. you can directly send your feedbacks to Admin
+            or you can send your feedbacks using our Google form link: please choose what suits you well"""
+            , reply_markup = feedback_markup())
+
+    elif message.text == "Already Registered?":
+        telebot_instance.reply_to(
+        message,
+            """If you have already registered, please continue to the payment method""", reply_markup = payment_markup())
+    elif message.text == "Google Form":
+        telebot_instance.reply_to(
+        message,
+            """Please fill out the Google form to register: [Google Form](https://forms.gle/7oZ6z5f4v5ZnUv8dA)""", reply_markup = register_markup())
+    elif message.text == "Directly on Telegram":
+        telebot_instance.reply_to(
+            message,
+                """please use this username
+                @easygate2 or 0964255107 to register""", reply_markup = register_markup())
+    elif message.text == "Bot Registration":
+        start_registration(message)
+
+    elif message.text == "Google Form feedback":
+        telebot_instance.reply_to(
+            message,
+                """Please fill out the Google form to provide feedback: [Google Form](https://forms.gle/7oZ6z5f4v5ZnUv8dA)""", reply_markup = feedback_markup())
+    elif message.text == "main menu":
+        telebot_instance.reply_to(
+            message,
+                """Welcome back""", reply_markup = main_menu_markup())
+    elif message.text == "Contact":
+        telebot_instance.reply_to(
+            message,
+                """Contact us via:
+                @easygate2
+                0964255107
+                contact.easygate@gmail.com
+                """, reply_markup = main_menu_markup())
+    elif message.text == "Guide":
+        telebot_instance.reply_to(
+            message,
+                """ Guide to EasyGate registration bot:
+1️⃣ See our services, get to know our bot, contact us and learn more.
+2️⃣ Follow instructions to register.
+3️⃣ Use 'Payment' to handle transactions securely.
+
+Explore and simplify your journey with EasyGate! 🌟""", reply_markup = main_menu_markup()
+    )
+    elif message.text == "Help":
+        telebot_instance.reply_to(
+            message,
+                """ to use this service, please hit /start
+                for guide, use this /guide
+                to  contact us, use this /contact
+    """, reply_markup = main_menu_markup()
+    )
+
+    elif message.text == "Directly to Admin":
+        telebot_instance.reply_to(
+            message,
+            "Please send your feedback now. I'll forward it to the admin."
+        )
+        telebot_instance.register_next_step_handler(message, forward_feedback_to_admin)
+    elif message.text == "Bot Registration":
+        start_registration(message)
+
+
+
 
 
 
