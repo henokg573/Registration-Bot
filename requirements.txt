@@ -121,3 +121,7 @@ Flask==2.3.3
 telethon
 requests
 python-telegram-bot
+fastapi
+aiogram
+aiohttp
+unicorn

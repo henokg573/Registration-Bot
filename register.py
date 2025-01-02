@@ -51,7 +51,7 @@ async def cyclic_ping():
             async with httpx.AsyncClient() as client:
                 response = await client.get(PING_ENDPOINT)
                 print(f"Pinging app: Status code {response.status_code}")
-            await asyncio.sleep(900)  # Ping every 15 minutes
+            await asyncio.sleep(600)  # Ping every 10 minutes
         except Exception as e:
             print(f"Error in cyclic_ping: {e}")
             await asyncio.sleep(60)  # Wait 1 minute before retrying
@@ -70,10 +70,70 @@ async def healthcheck():
 
 app = FastAPI(lifespan=lifespan)
 
-# Example bot command handler
 @dp.message_handler(commands=["start"])
-async def start_command(message: types.Message):
-    await message.reply("Hello! I am your bot, ready to assist you.")
+async def send_welcome(message: types.Message):
+    print(f"Received /start from {message.chat.id}")  # Debugging
+
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    btn1 = types.KeyboardButton('About Us')
+    btn2 = types.KeyboardButton('Our Services')
+    btn3 = types.KeyboardButton('Continue to Register')
+    btn4 = types.KeyboardButton('Feedback')
+    markup.add(btn1, btn2, btn3, btn4)
+
+    await message.reply(
+        f"""👋 Hi {message.chat.first_name}! 
+        👋 Welcome to EasyGate!, 
+        Welcome to Your Gateway to Global Opportunities.
+        
+        Simplifying Your Path to Success.
+        From Dreams to Destinations.
+        Open Doors, Easy Journeys.
+
+We’re thrilled to have you here! 🎉
+
+At EasyGate, we specialize in making your goals more accessible, whether it’s education, travel, or career growth. Here's what we can help you with:
+- Scholarship and admission opportunities
+- Passport and visa applications
+- International career and e-commerce services
+- Embassy appointments and travel consultancy
+- Online courses and proficiency tests
+
+Let us guide you every step of the way! Simply explore the options below and get started on your journey with us.
+
+Feel free to reach out if you have any questions—we’re here to make things easy for you!
+
+We are currently in the registration period. You can continue to register or see our services. 
+If you need help, please type /help.
+If you need to contact us, use the command /contact.
+If you need a guide on how to use our services, we have prepared a tour guide here: /guide.
+        """,
+        reply_markup=markup,
+    )
+
+# Guide Command
+@dp.message_handler(commands=['guide'])
+@dp.message_handler(func=lambda message: message.text == "Guide")
+async def send_guide(message: types.Message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    markup.add(types.KeyboardButton('Back to Main Menu'))
+    await message.reply(
+        """ Guide to EasyGate registration bot:
+1️⃣ See our services, get to know our bot, contact us and learn more.
+2️⃣ Follow instructions to register.
+3️⃣ Use 'Payment' to handle transactions securely.
+
+Explore and simplify your journey with EasyGate! 🌟""",
+        reply_markup=markup
+    )
+
+# Function to start the dummy HTTP server (Optional)
+def start_dummy_server():
+    PORT = 8000
+    Handler = http.server.SimpleHTTPRequestHandler
+    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+        print(f"Serving on port {PORT}")
+        httpd.serve_forever()
     
 
 
