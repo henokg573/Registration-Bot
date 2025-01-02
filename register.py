@@ -26,7 +26,8 @@ from aiogram import Bot, Dispatcher, types
 import httpx
 from contextlib import asynccontextmanager
 
-dp = Dispatcher(bot)    
+dp = Dispatcher(bot=bot)
+    
 
 
 # FastAPI app
@@ -349,10 +350,33 @@ def handle_options(message):
         bot.reply_to(
             message,
                 """Please fill out the Google form to provide feedback: [Google Form](https://forms.gle/7oZ6z5f4v5ZnUv8dA)""", reply_markup = feedback_markup())
-    elif message.text == "Directly to Admin":
-        bot.reply_to(
-            message,
-                """Please send your feedback directly to the admin.""", reply_markup = feedback_markup())
+
+@bot.message_handler(func=lambda message: message.text == "Directly to Admin")
+def handle_feedback(message):
+    bot.reply_to(
+        message,
+        """Please send your feedback directly to the admin.""",
+        reply_markup=feedback_markup()
+    )
+
+# This will handle the feedback sent by the user
+@bot.message_handler(func=lambda message: message.text and message.text != "Directly to Admin")
+def forward_feedback_to_admin(message):
+    if message.text:
+        try:
+            # Send the user's message to the admin
+            bot.send_message(ADMIN_CHAT_ID, f"Feedback from {message.from_user.first_name} ({message.from_user.id}):\n\n{message.text}")
+            bot.reply_to(
+                message,
+                "Your feedback has been sent to the admin. Thank you!"
+            )
+        except Exception as e:
+            bot.reply_to(
+                message,
+                "There was an error sending your feedback. Please try again later."
+            )
+            print(f"Error forwarding feedback: {e}")
+
     elif message.text == "Bank Transfer":
         bot.reply_to(
             message,
