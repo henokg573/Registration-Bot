@@ -9,10 +9,12 @@ import socketserver
 import threading
 from contextlib import asynccontextmanager
 import httpx
-from fastapi import FastAPI
 
-# Initialize the FastAPI app
-app = FastAPI()
+from fastapi import FastAPI
+from fastapi import HTTPException
+# Correctly define the app instance
+fastapi_app = FastAPI()
+
 # API keys and admin chat ID
 API_KEY = "7759515826:AAG9Gl8kSJLbpeaGbui351Nx-A"
 ADMIN_CHAT_ID = "793034140"
