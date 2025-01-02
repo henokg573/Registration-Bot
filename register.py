@@ -20,8 +20,60 @@ import http.server
 import socketserver
 import threading
 
+from fastapi import FastAPI
+import asyncio
+from aiogram import Bot, Dispatcher, types
+import httpx
+from contextlib import asynccontextmanager
+
+dp = Dispatcher(bot)    
 
 
+# FastAPI app
+app = FastAPI()
+
+# Update PING_ENDPOINT with your bot's URL
+PING_ENDPOINT = "https://easygate-registration-bot-34qv.onrender.com/healthcheck"
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Start periodic ping and bot polling tasks
+    ping_task = asyncio.create_task(cyclic_ping())
+    bot_task = asyncio.create_task(start_polling())
+    yield
+    # Cancel tasks on app shutdown
+    ping_task.cancel()
+    bot_task.cancel()
+
+async def cyclic_ping():
+    while True:
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(PING_ENDPOINT)
+                print(f"Pinging app: Status code {response.status_code}")
+            await asyncio.sleep(900)  # Ping every 15 minutes
+        except Exception as e:
+            print(f"Error in cyclic_ping: {e}")
+            await asyncio.sleep(60)  # Wait 1 minute before retrying
+
+async def start_polling():
+    # Start long polling for Telegram bot
+    try:
+        print("Starting Telegram bot polling...")
+        await dp.start_polling()
+    except Exception as e:
+        print(f"Error in bot polling: {e}")
+
+@app.get("/healthcheck")
+async def healthcheck():
+    return {"status": "ok"}
+
+app = FastAPI(lifespan=lifespan)
+
+# Example bot command handler
+@dp.message_handler(commands=["start"])
+async def start_command(message: types.Message):
+    await message.reply("Hello! I am your bot, ready to assist you.")
     
 
 
