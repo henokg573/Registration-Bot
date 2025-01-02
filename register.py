@@ -1,75 +1,75 @@
+import asyncio
 from flask import Flask, request
-import telebot
-from telegram import Bot, Update
-from telebot import types
-from telegram.ext import CommandHandler, Updater, CallbackContext, Application
-import os
-# from telegram.ext import Dispatcher
-from telebot.types import ForceReply
-import telegram
-from telebot import types
-
-API_KEY = "7759515826:AAG9onLgiHUc9Gl8kSJLbpeaGbui351Nx-A"
-ADMIN_CHAT_ID = "793034140"
-# API_KEY = os.getenv("API_KEY")
-# ADMIN_CHAT_ID  = os.getenv("ADMIN_CHAT_Id"")
-bot = telebot.TeleBot(API_KEY)
-
-
+from telebot import TeleBot, types
+from aiogram import Bot, Dispatcher, types as aio_types
+from aiogram.filters import Command
+from fastapi import FastAPI, Request
 import http.server
 import socketserver
 import threading
-
-from fastapi import FastAPI
-import asyncio
-from aiogram import Bot, Dispatcher, types
-import httpx
 from contextlib import asynccontextmanager
-from aiogram import Bot, Dispatcher, Router
-from aiogram.types import Message
-from aiogram.filters import Command
-import asyncio
-dp = Dispatcher(bot=bot)
-    
+import httpx
+from fastapi import FastAPI
 
-# Create a router
-router = Router()
+# Initialize the FastAPI app
+app = FastAPI()
+# API keys and admin chat ID
+API_KEY = "7759515826:AAG9Gl8kSJLbpeaGbui351Nx-A"
+ADMIN_CHAT_ID = "793034140"
 
-# Register the start command handler
-@router.message(Command("start"))
-async def start_command(message: Message):
-    await message.answer("Hello! I'm the EasyGate registration bot. How can I help you?")
+# Initialize Telebot and Flask app
+telebot_instance = TeleBot(API_KEY)
+flask_app = Flask(__name__)
 
-
-# Initialize the dispatcher
+# Initialize Aiogram and FastAPI
+aiogram_bot = Bot(token=API_KEY)
 dp = Dispatcher()
 
-# Include the router in the dispatcher
-dp.include_router(router)
-
-# Start polling
-async def main():
-    # bot.delete_webhook(drop_pending_updates=True)  # Optional: Clear pending updates
-    await dp.start_polling(bot)
-
-if __name__ == "__main__":
-    asyncio.run(main())
-# FastAPI app
-app = FastAPI()
-
-# Update PING_ENDPOINT with your bot's URL
+# Define a common endpoint for both bots
 PING_ENDPOINT = "https://easygate-registration-bot-34qv.onrender.com/healthcheck"
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Start periodic ping and bot polling tasks
-    ping_task = asyncio.create_task(cyclic_ping())
-    bot_task = asyncio.create_task(start_polling())
-    yield
-    # Cancel tasks on app shutdown
-    ping_task.cancel()
-    bot_task.cancel()
+# Telebot Handlers
+@telebot_instance.message_handler(commands=["start"])
+def telebot_start(message):
+    print(f"Received /start from {message.chat.id}")  # Debugging
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    btn1 = types.KeyboardButton('About Us')
+    btn2 = types.KeyboardButton('Our Services')
+    btn3 = types.KeyboardButton('Continue to Register')
+    btn4 = types.KeyboardButton('Feedback')
+    markup.add(btn1, btn2, btn3, btn4)
 
+    telebot_instance.reply_to(
+        message,
+        f"""👋 Hi {message.chat.first_name}! 
+        👋 Welcome to EasyGate! ...
+        """,
+        reply_markup=markup,
+    )
+
+@flask_app.route(f"/{API_KEY}", methods=["POST"])
+def telebot_webhook():
+    update = request.get_json()
+    if update:
+        telebot_instance.process_new_updates([types.Update.de_json(update)])
+    return {"status": "ok"}
+
+# Aiogram Handlers
+@dp.message(Command("help"))
+async def aiogram_help(message: aio_types.Message):
+    await message.answer("Welcome to the Aiogram bot! How can I assist you?")
+
+@dp.message(Command("start"))
+async def aiogram_start(message: aio_types.Message):
+    await message.answer("Hello! I'm the EasyGate registration bot. How can I help you?")
+
+@fastapi_app.post(f"/{API_KEY}")
+async def aiogram_webhook(request: Request):
+    update = await request.json()
+    await dp.process_update(aio_types.Update(**update))
+    return {"status": "ok"}
+
+# Async Ping Task for Healthcheck
 async def cyclic_ping():
     while True:
         try:
@@ -81,113 +81,17 @@ async def cyclic_ping():
             print(f"Error in cyclic_ping: {e}")
             await asyncio.sleep(60)  # Wait 1 minute before retrying
 
-async def start_polling():
-    # Start long polling for Telegram bot
-    try:
-        print("Starting Telegram bot polling...")
-        await dp.start_polling()
-    except Exception as e:
-        print(f"Error in bot polling: {e}")
+# Thread for Telebot
+def run_telebot():
+    print("Starting Telebot...")
+    telebot_instance.polling()
 
-@app.get("/healthcheck")
-async def healthcheck():
-    return {"status": "ok"}
+# Async Task for Aiogram
+async def run_aiogram():
+    print("Starting Aiogram...")
+    await dp.start_polling(aiogram_bot)
 
-app = FastAPI(lifespan=lifespan)
-
-
-
-
-
-
-
-import email
-from flask import Flask, request
-import telebot
-from telegram import Bot
-from telegram import Update
-from telebot import types
-from telebot import types
-from telegram.ext import CommandHandler, Updater, CallbackContext, Application
-import os
-# from telegram.ext import Dispatcher
-from telebot.types import ForceReply
-import telegram
-from telebot import types
-
-
-bot = telebot.TeleBot(API_KEY)
-
-
-ADMIN_CHAT_ID = '793034140'  # Admin chat id from telegram
-
-# Initialize the Flask app
-
-app = Flask(__name__)
-# if __name__ == "__main__":
-#     try:
-#         bot.infinity_polling()
-#     except Exception as e:
-#         print(f"Error: {e}")
-import http.server
-import socketserver
-import threading
-import telebot
-from telebot import types
-
-# Telegram bot token
-
-bot = telebot.TeleBot(API_KEY)
-
-# Function to run the Telegram bot
-def start_telegram_bot():
-    print("Starting Telegram bot...")
-    bot.polling()
-
-# Define the bot's handlers
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
-    print(f"Received /start from {message.chat.id}")  # Debugging
-
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    btn1 = types.KeyboardButton('About Us')
-    btn2 = types.KeyboardButton('Our Services')
-    btn3 = types.KeyboardButton('Continue to Register')
-    btn4 = types.KeyboardButton('Feedback')
-    markup.add(btn1, btn2, btn3, btn4)
-
-    bot.reply_to(
-        message,
-        f"""👋 Hi {message.chat.first_name}! 
-        👋 Welcome to EasyGate!, 
-        Welcome to Your Gateway to Global Opportunities.
-        
-        Simplifying Your Path to Success.
-        From Dreams to Destinations.
-        Open Doors, Easy Journeys.
-
-We’re thrilled to have you here! 🎉
-
-At EasyGate, we specialize in making your goals more accessible, whether it’s education, travel, or career growth. Here's what we can help you with:
-- Scholarship and admission opportunities
-- Passport and visa applications
-- International career and e-commerce services
-- Embassy appointments and travel consultancy
-- Online courses and proficiency tests
-
-Let us guide you every step of the way! Simply explore the options below and get started on your journey with us.
-
-Feel free to reach out if you have any questions—we’re here to make things easy for you!
-
-We are currently in the registration period. You can continue to register or see our services. 
-If you need help, please type /help.
-If you need to contact us, use the command /contact.
-If you need a guide on how to use our services, we have prepared a tour guide here: /guide.
-        """,
-        reply_markup=markup,
-    )
-
-# Function to start the dummy HTTP server
+# Dummy HTTP Server for Testing
 def start_dummy_server():
     PORT = 8000
     Handler = http.server.SimpleHTTPRequestHandler
@@ -195,13 +99,26 @@ def start_dummy_server():
         print(f"Serving on port {PORT}")
         httpd.serve_forever()
 
+# Main Entry Point
+if __name__ == "__main__":
+    # Start Telebot in a separate thread
+    telebot_thread = threading.Thread(target=run_telebot, daemon=True)
+    telebot_thread.start()
+
+    # Start Dummy HTTP Server in another thread
+    dummy_server_thread = threading.Thread(target=start_dummy_server, daemon=True)
+    dummy_server_thread.start()
+
+    # Run Aiogram in the main asyncio loop
+    asyncio.run(run_aiogram())
+
 
     
     # Guide Command
-@bot.message_handler(commands=['guide'])
-@bot.message_handler(func=lambda message: message.text == "Guide")
+@telebot_instance.message_handler(commands=['guide'])
+@telebot_instance.message_handler(func=lambda message: message.text == "Guide")
 def send_guide(message):
-    bot.reply_to(
+    telebot_instance.reply_to(
         message,
         """ Guide to EasyGate registration bot:
 1️⃣ See our services, get to know our bot, contact us and learn more.
@@ -215,10 +132,10 @@ Explore and simplify your journey with EasyGate! 🌟""", reply_markup = main_me
 
 
  # Help Command
-@bot.message_handler(commands=['help'])
-@bot.message_handler(func=lambda message: message.text == "Help")
+@telebot_instance.message_handler(commands=['help'])
+@telebot_instance.message_handler(func=lambda message: message.text == "Help")
 def send_guide(message):
-    bot.reply_to(
+    telebot_instance.reply_to(
         message,
         """ to use this service, please hit /start
         for guide, use this /guide
@@ -226,10 +143,10 @@ def send_guide(message):
 """, reply_markup = main_menu_markup()
     )
     # Contact Command
-@bot.message_handler(commands=['contact'])
-@bot.message_handler(func=lambda message: message.text == "Contact")
+@telebot_instance.message_handler(commands=['contact'])
+@telebot_instance.message_handler(func=lambda message: message.text == "Contact")
 def send_guide(message):
-    bot.reply_to(
+    telebot_instance.reply_to(
         message,
         """Contact us via:
         @easygate2
@@ -239,12 +156,12 @@ def send_guide(message):
         to start using this service, use this /start""",reply_markup = main_menu_markup())
 
 
-@bot.message_handler(func=lambda message: True)
+@telebot_instance.message_handler(func=lambda message: True)
 def handle_options(message):
     print(f"Message received: {message.text}")  # Debugging
     service_selected = message.text  # Define service_selected
     if message.text == 'About Us':
-        bot.reply_to(
+        telebot_instance.reply_to(
         message,
         """Welcome to EasyGate! 
 
@@ -262,7 +179,7 @@ def handle_options(message):
     Feel free to contact us via any of the platforms above for more information or to get started! 
     """, reply_markup = main_menu_markup())
     elif message.text == "Our Services":
-        bot.reply_to(
+        telebot_instance.reply_to(
         message,
         """ Our Services:
     1️⃣ Embassy Interview Assistance
@@ -281,65 +198,65 @@ def handle_options(message):
 
 📞 Contact us to learn more.""", reply_markup = main_menu_markup())
     elif message.text == "Continue to  Register":
-        bot.reply_to(
+        telebot_instance.reply_to(
         message,
             """To register, we offer three ways, you can register through
             our google form link, you can contact us and register, and you can register through our bot.
             please choose one of the options below to continue.""", reply_markup = register_markup())
     elif message.text == "Feedback":
-        bot.reply_to(
+        telebot_instance.reply_to(
         message,
             """We value your feedback!. you can directly send your feedbacks to Admin
             or you can send your feedbacks using our Google form link: please choose what suits you well"""
             , reply_markup = feedback_markup())
     elif message.text == "Already Registered?":
-        bot.reply_to(
+        telebot_instance.reply_to(
         message,
             """If you have already registered, please continue to the payment method""", reply_markup = payment_markup())
     elif message.text == "Google Form":
-        bot.reply_to(
+        telebot_instance.reply_to(
         message,
             """Please fill out the Google form to register: [Google Form](https://forms.gle/7oZ6z5f4v5ZnUv8dA)""", reply_markup = register_markup())
     elif message.text == "Directly on Telegram":
-        bot.reply_to(
+        telebot_instance.reply_to(
             message,
                 """please use this username
                 @easygate2 or 0964255107 to register""", reply_markup = register_markup())
     elif message.text == "Bot Registration":
         start_registration(message)
     elif message.text == "Google Form feedback":
-        bot.reply_to(
+        telebot_instance.reply_to(
             message,
                 """Please fill out the Google form to provide feedback: [Google Form](https://forms.gle/7oZ6z5f4v5ZnUv8dA)""", reply_markup = feedback_markup())
 
-@bot.message_handler(func=lambda message: message.text == "Directly to Admin")
+@telebot_instance.message_handler(func=lambda message: message.text == "Directly to Admin")
 def handle_feedback(message):
-    bot.reply_to(
+    telebot_instance.reply_to(
         message,
         """Please send your feedback directly to the admin.""",
         reply_markup=feedback_markup()
     )
 
 # This will handle the feedback sent by the user
-@bot.message_handler(func=lambda message: message.text and message.text != "Directly to Admin")
+@telebot_instance.message_handler(func=lambda message: message.text and message.text != "Directly to Admin")
 def forward_feedback_to_admin(message):
     if message.text:
         try:
             # Send the user's message to the admin
-            bot.send_message(ADMIN_CHAT_ID, f"Feedback from {message.from_user.first_name} ({message.from_user.id}):\n\n{message.text}")
-            bot.reply_to(
+            telebot_instance.send_message(ADMIN_CHAT_ID, f"Feedback from {message.from_user.first_name} ({message.from_user.id}):\n\n{message.text}")
+            telebot_instance.reply_to(
                 message,
                 "Your feedback has been sent to the admin. Thank you!"
             )
         except Exception as e:
-            bot.reply_to(
+            telebot_instance.reply_to(
                 message,
                 "There was an error sending your feedback. Please try again later."
             )
             print(f"Error forwarding feedback: {e}")
 
     elif message.text == "Bank Transfer":
-        bot.reply_to(
+        telebot_instance.reply_to(
             message,
                 """Please transfer the payment to the following bank account:
                 Bank Name: CBE
@@ -347,27 +264,27 @@ def forward_feedback_to_admin(message):
                 Account Name: EasyGate
                 Please provide the receipt after payment.""", reply_markup = payment_markup())
     elif message.text == "Telebirr":
-        bot.reply_to(
+        telebot_instance.reply_to(
             message,
                 """Please transfer the payment to the following Telebirr account:
                 Telebirr Number: 0964255107
                 Account Name: EasyGate
                 Please provide the receipt after payment.""", reply_markup = payment_markup())
     elif message.text == "PayPal":
-        bot.reply_to(
+        telebot_instance.reply_to(
             message,
                 """Please transfer the payment to the following PayPal account:
                 PayPal Email: contact.easygate@gmail.com""", reply_markup = payment_markup())
     elif message.text == "Already Paid? (Submit receipt)": 
-        bot.reply_to(
+        telebot_instance.reply_to(
             message,
                 """Please submit the receipt after payment.""", reply_markup = payment_markup())
     elif message.text == "Choose Different Payment Method":
-        bot.reply_to(
+        telebot_instance.reply_to(
             message,
                 """Please choose a different payment method.""", reply_markup = payment_markup())
     elif message.text == "main menu":
-        bot.reply_to(
+        telebot_instance.reply_to(
             message,
                 """Welcome to EasyGate!
                 We are a team of young Ethiopians, currently studying and working across the globe. Our mission is to simplify the process of accessing international education and career opportunities by reducing costs and eliminating the need for expensive intermediaries.   
@@ -379,40 +296,40 @@ def forward_feedback_to_admin(message):
                 Email: contact.easygate@gmail.com
                 Feel free to contact us via any of the platforms above for more information or to get started!""", reply_markup = main_menu_markup())
     else:
-        bot.reply_to(
+        telebot_instance.reply_to(
                 message,
                 "I don't understand that command. Please use the help commant."
             )
 # Handle the feedback submission and forward to admin
-@bot.message_handler(func=lambda message: message.text == "Directly to Admin")
+@telebot_instance.message_handler(func=lambda message: message.text == "Directly to Admin")
 def handle_direct_to_admin(message):
-    bot.reply_to(
+    telebot_instance.reply_to(
         message,
         "Please send your feedback now. I'll forward it to the admin."
     )
     
     # Register a handler to capture the next message as feedback
-    bot.register_next_step_handler(message, forward_feedback_to_admin)
+    telebot_instance.register_next_step_handler(message, forward_feedback_to_admin)
 
 def forward_feedback_to_admin(message):
     # Send the user's feedback to the admin
     try:
-        bot.send_message(
+        telebot_instance.send_message(
             ADMIN_CHAT_ID,
             f"Feedback from @{message.from_user.username or message.from_user.first_name}:\n{message.text}"
         )
-        bot.reply_to(message, "Thank you! Your feedback has been sent to the admin.")
+        telebot_instance.reply_to(message, "Thank you! Your feedback has been sent to the admin.")
     except Exception as e:
-        bot.reply_to(message, "Oops! Something went wrong while sending your feedback.")
+        telebot_instance.reply_to(message, "Oops! Something went wrong while sending your feedback.")
         print(f"Error: {e}")
 
 
-@bot.message_handler(func=lambda message: message.text == "Bot Registration")
+@telebot_instance.message_handler(func=lambda message: message.text == "Bot Registration")
 def start_registration(message):
     chat_id = message.chat.id
     user_data[chat_id] = {}  # Initialize user data for this chat
-    bot.send_message(chat_id, "Please provide your first name:")
-    bot.register_next_step_handler(message, collect_first_name)
+    telebot_instance.send_message(chat_id, "Please provide your first name:")
+    telebot_instance.register_next_step_handler(message, collect_first_name)
 
 
 
@@ -426,48 +343,48 @@ def collect_first_name(message):
     chat_id = message.chat.id
     first_name = message.text.strip()
     if len(first_name) < 3:
-        bot.reply_to(message, "First name must be at least 3 characters. Try again:")
-        bot.register_next_step_handler(message, collect_first_name)
+        telebot_instance.reply_to(message, "First name must be at least 3 characters. Try again:")
+        telebot_instance.register_next_step_handler(message, collect_first_name)
         return
     user_data['first_name'] = first_name
-    bot.reply_to(message, "Please enter your father's name:")
-    bot.register_next_step_handler(message, collect_fathers_name)
+    telebot_instance.reply_to(message, "Please enter your father's name:")
+    telebot_instance.register_next_step_handler(message, collect_fathers_name)
 def collect_fathers_name(message):
     chat_id = message.chat.id
     fathers_name = message.text.strip()
     if len(fathers_name) < 3:
-        bot.reply_to(message, "First name must be at least 3 characters. Try again:")
-        bot.register_next_step_handler(message, collect_fathers_name)
+        telebot_instance.reply_to(message, "First name must be at least 3 characters. Try again:")
+        telebot_instance.register_next_step_handler(message, collect_fathers_name)
         return
     user_data['fathers_name'] = fathers_name
-    bot.reply_to(message, "Please enter your phone number:")
-    bot.register_next_step_handler(message, collect_phone_number)
+    telebot_instance.reply_to(message, "Please enter your phone number:")
+    telebot_instance.register_next_step_handler(message, collect_phone_number)
 def collect_phone_number(message):
     chat_id = message.chat.id
     phone_number = message.text
     if len(phone_number) != 10 or not phone_number.isdigit():
-        bot.send_message(message.chat.id, "Phone number must be exactly 10 digits. Please try again.")
-        bot.register_next_step_handler(message, collect_phone_number)
+        telebot_instance.send_message(message.chat.id, "Phone number must be exactly 10 digits. Please try again.")
+        telebot_instance.register_next_step_handler(message, collect_phone_number)
         return
     user_data['phone_number'] = phone_number
-    bot.send_message(message.chat.id, "Please enter your email address (must contain @gmail.com):")
-    bot.register_next_step_handler(message, collect_email)
+    telebot_instance.send_message(message.chat.id, "Please enter your email address (must contain @gmail.com):")
+    telebot_instance.register_next_step_handler(message, collect_email)
 def collect_email(message):
     chat_id = message.chat.id
     email = message.text.strip()
     if not email.endswith('@gmail.com'):
-        bot.reply_to(message, "Email must contain @gmail.com. Please try again:")
-        bot.register_next_step_handler(message, collect_email)
+        telebot_instance.reply_to(message, "Email must contain @gmail.com. Please try again:")
+        telebot_instance.register_next_step_handler(message, collect_email)
         return
     user_data['email'] = email
-    bot.send_message(chat_id, """Thank you! Now, please select a payment method or submit your receipt.
+    telebot_instance.send_message(chat_id, """Thank you! Now, please select a payment method or submit your receipt.
                      and write your name on the file format or when you send a file, write your name on it or rename the file as your name.
                      for example, JohnDoe.jp for images or JohnDoe.pdf for pdf files""", reply_markup=payment_markup())
 
 
 
 # Handle the receipt submission and forward to admin
-@bot.message_handler(content_types=['document', 'photo'])
+@telebot_instance.message_handler(content_types=['document', 'photo'])
 def process_receipt(message):
     user_id = message.chat.id
     user_first_name = message.chat.first_name
@@ -484,24 +401,24 @@ def process_receipt(message):
         if file_extension == 'pdf':
             receipt_file = message.document.file_id
             file_type = 'PDF'
-            bot.send_document(ADMIN_CHAT_ID, receipt_file)
+            telebot_instance.send_document(ADMIN_CHAT_ID, receipt_file)
         else:
-            bot.reply_to(message, "Please send a valid receipt in PDF format.")
+            telebot_instance.reply_to(message, "Please send a valid receipt in PDF format.")
             return
 
     elif message.photo:
         receipt_file = message.photo[-1].file_id  # Get the highest quality photo
         file_type = 'Photo'
-        bot.send_photo(ADMIN_CHAT_ID, receipt_file)
+        telebot_instance.send_photo(ADMIN_CHAT_ID, receipt_file)
 
     else:
-        bot.reply_to(message, "Please send a valid receipt in PDF or image format.")
+        telebot_instance.reply_to(message, "Please send a valid receipt in PDF or image format.")
         return
 
     # Inform the admin about the receipt submission
     pending_verifications[user_id] = {'file_id': receipt_file, 'file_type': file_type, 'user_name': user_first_name}
-    bot.reply_to(message, "Your payment receipt has been sent for verification. The admin will confirm your payment shortly.")
-    bot.send_message(ADMIN_CHAT_ID, f"📩 New Payment Receipt from {user_first_name} ({user_id}):")
+    telebot_instance.reply_to(message, "Your payment receipt has been sent for verification. The admin will confirm your payment shortly.")
+    telebot_instance.send_message(ADMIN_CHAT_ID, f"📩 New Payment Receipt from {user_first_name} ({user_id}):")
     # bot.send_message(ADMIN_CHAT_ID, registration_details)
 
     # Send Inline buttons to Admin for verification
@@ -509,30 +426,30 @@ def process_receipt(message):
     verify_button = types.InlineKeyboardButton("✅ Verify User", callback_data=f"verify_{user_id}")
     invalid_button = types.InlineKeyboardButton("❌ Invalid Payment", callback_data=f"invalid_{user_id}")
     markup.add(verify_button, invalid_button)
-    bot.send_message(ADMIN_CHAT_ID, "Please verify the payment from the user:", reply_markup=markup)
+    telebot_instance.send_message(ADMIN_CHAT_ID, "Please verify the payment from the user:", reply_markup=markup)
 
 
 # Handle admin verification actions
-@bot.callback_query_handler(func=lambda call: call.data.startswith('verify_') or call.data.startswith('invalid_'))
+@telebot_instance.callback_query_handler(func=lambda call: call.data.startswith('verify_') or call.data.startswith('invalid_'))
 def handle_admin_response(call):
     user_id = int(call.data.split('_')[1])
     
     if call.data.startswith('verify_'):
         if user_id in pending_verifications:
             user_data[user_id] = pending_verifications.pop(user_id)
-            bot.send_message(user_id, "✅ Your payment has been verified! Please proceed to select your service. this is our channel, please join us [channel](https://t.me/easygate)", reply_markup=main_menu_markup())
+            telebot_instance.send_message(user_id, "✅ Your payment has been verified! Please proceed to select your service. this is our channel, please join us [channel](https://t.me/easygate)", reply_markup=main_menu_markup())
         else:
-            bot.send_message(ADMIN_CHAT_ID, "The user ID is not in the pending verifications.")
+            telebot_instance.send_message(ADMIN_CHAT_ID, "The user ID is not in the pending verifications.")
 
     elif call.data.startswith('invalid_'):
         if user_id in pending_verifications:
             pending_verifications.pop(user_id)
-            bot.send_message(user_id, "❌ Your payment could not be verified. Please contact support.")
-            bot.send_message(ADMIN_CHAT_ID, f"Payment invalid for {user_id}. User has been notified.")
+            telebot_instance.send_message(user_id, "❌ Your payment could not be verified. Please contact support.")
+            telebot_instance.send_message(ADMIN_CHAT_ID, f"Payment invalid for {user_id}. User has been notified.")
         else:
-            bot.send_message(ADMIN_CHAT_ID, "The user ID is not in the pending verifications.")
+            telebot_instance.send_message(ADMIN_CHAT_ID, "The user ID is not in the pending verifications.")
 
-    bot.answer_callback_query(call.id)  # Close the callback button
+    telebot_instance.answer_callback_query(call.id)  # Close the callback button
 
 
 def handle_service_selection(message):
@@ -548,24 +465,24 @@ def handle_service_selection(message):
         file_type = receipt_details['file_type']
 
         # Forward the receipt and service selection to the admin
-        bot.send_message(ADMIN_CHAT_ID, f"📩 Verified Payment Receipt from {receipt_details['user_name']} ({user_id}):\n\nService: {service_selected}")
+        telebot_instance.send_message(ADMIN_CHAT_ID, f"📩 Verified Payment Receipt from {receipt_details['user_name']} ({user_id}):\n\nService: {service_selected}")
         if file_type == 'Document':
-            bot.send_document(ADMIN_CHAT_ID, file_id)
+            telebot_instance.send_document(ADMIN_CHAT_ID, file_id)
         elif file_type == 'Photo':
-            bot.send_photo(ADMIN_CHAT_ID, file_id)
+            telebot_instance.send_photo(ADMIN_CHAT_ID, file_id)
 
         # Inform the user about the service selection
 
         # Clear the user's data after the service has been provided
         del user_data[user_id]
     else:
-        bot.reply_to(message, "We could not find your payment details. Please resend your receipt.")
+        telebot_instance.reply_to(message, "We could not find your payment details. Please resend your receipt.")
 
 
 def process_receipt(message):
     # Process receipt logic here
     chat_id = message.chat.id
-    bot.send_message(
+    telebot_instance.send_message(
         chat_id,
         "Thank you for submitting your receipt. Please choose a payment method or let us know if you've already paid:",
         reply_markup=payment_markup()  # Show the payment options
@@ -611,9 +528,14 @@ def payment_markup():
 
 
 
+
 if __name__ == "__main__":
     # Start the dummy server in a separate thread
     threading.Thread(target=start_dummy_server, daemon=True).start()
 
+    telebot_thread = threading.Thread(target=run_telebot, daemon=True)
+    telebot_thread.start()
     # Start the Telegram bot
-    start_telegram_bot()
+    telebot_instance.polling()
+
+    # main()
