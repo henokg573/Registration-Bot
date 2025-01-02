@@ -133,7 +133,7 @@ If you need a guide on how to use our services, we have prepared a tour guide he
     if message.text == "About Us":
         telebot_instance.reply_to(
         message,
-        Welcome to EasyGate! 
+        """Welcome to EasyGate! 
 
     We are a team of young Ethiopians, currently studying and working across the globe. Our mission is to simplify the process of accessing international education and career opportunities by reducing costs and eliminating the need for expensive intermediaries. 
 
@@ -146,8 +146,7 @@ If you need a guide on how to use our services, we have prepared a tour guide he
      WhatsApp: 0964255107 or https://wa.me/0964255107
      Email: contact.easygate@gmail.com
 
-    Feel free to contact us via any of the platforms above for more information or to get started! 
-    """, reply_markup = main_menu_markup())
+    Feel free to contact us via any of the platforms above for more information or to get started! """, reply_markup = main_menu_markup())
     elif message.text == "Our Services":
         telebot_instance.reply_to(
         message,
@@ -214,6 +213,7 @@ If you need a guide on how to use our services, we have prepared a tour guide he
                 0964255107
                 contact.easygate@gmail.com
                 """, reply_markup = main_menu_markup())
+
     elif message.text == "Guide":
         telebot_instance.reply_to(
             message,
