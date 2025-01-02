@@ -97,7 +97,8 @@ async def aiogram_start(message: aio_types.Message):
     btn2 = types.KeyboardButton('Our Services')
     btn3 = types.KeyboardButton('Continue to Register')
     btn4 = types.KeyboardButton('Feedback')
-    markup.add(btn1, btn2, btn3, btn4)
+    btn5 = types.KeyboardButton('Already Registered?')
+    markup.add(btn1, btn2, btn3, btn4, btn5)
 
     telebot_instance.reply_to(
         message,
@@ -604,5 +605,3 @@ if __name__ == "__main__":
     telebot_thread.start()
     # Start the Telegram bot
     telebot_instance.polling()
-
-    # main()
