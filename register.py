@@ -15,7 +15,11 @@ from fastapi import HTTPException
 # Correctly define the app instance
 fastapi_app = FastAPI()
 
+from dotenv import load_dotenv
 import os
+
+# Load variables from .env file
+load_dotenv()
 
 API_KEY = os.getenv("API_KEY")
 ADMIN_CHAT_ID = os.getenv("ADMIN_CHAT_ID")
@@ -47,8 +51,31 @@ def telebot_start(message):
 
     telebot_instance.reply_to(
         message,
-        f"""👋 Hi {message.chat.first_name}! 
-        👋 Welcome to EasyGate! ...
+        f"""👋 Hi {message.chat.first_name}!  
+        👋 Welcome to EasyGate!, 
+        Welcome to Your Gateway to Global Opportunities.
+        
+        Simplifying Your Path to Success.
+        From Dreams to Destinations.
+        Open Doors, Easy Journeys.
+
+We’re thrilled to have you here! 🎉
+
+At EasyGate, we specialize in making your goals more accessible, whether it’s education, travel, or career growth. Here's what we can help you with:
+- Scholarship and admission opportunities
+- Passport and visa applications
+- International career and e-commerce services
+- Embassy appointments and travel consultancy
+- Online courses and proficiency tests
+
+Let us guide you every step of the way! Simply explore the options below and get started on your journey with us.
+
+Feel free to reach out if you have any questions—we’re here to make things easy for you!
+
+We are currently in the registration period. You can continue to register or see our services. 
+If you need help, please type /help.
+If you need to contact us, use the command /contact.
+If you need a guide on how to use our services, we have prepared a tour guide here: /guide.
         """,
         reply_markup=markup,
     )
@@ -67,7 +94,44 @@ async def aiogram_help(message: aio_types.Message):
 
 @dp.message(Command("start"))
 async def aiogram_start(message: aio_types.Message):
-    await message.answer("Hello! I'm the EasyGate registration bot. How can I help you?")
+    # await message.answer("Hello! I'm the EasyGate registration bot. How can I help you?")
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    btn1 = types.KeyboardButton('About Us')
+    btn2 = types.KeyboardButton('Our Services')
+    btn3 = types.KeyboardButton('Continue to Register')
+    btn4 = types.KeyboardButton('Feedback')
+    markup.add(btn1, btn2, btn3, btn4)
+
+    telebot_instance.reply_to(
+        message,
+        f"""👋 Hi {message.chat.first_name}! 
+        👋 Welcome to EasyGate!, 
+        Welcome to Your Gateway to Global Opportunities.
+        
+        Simplifying Your Path to Success.
+        From Dreams to Destinations.
+        Open Doors, Easy Journeys.
+
+We’re thrilled to have you here! 🎉
+
+At EasyGate, we specialize in making your goals more accessible, whether it’s education, travel, or career growth. Here's what we can help you with:
+- Scholarship and admission opportunities
+- Passport and visa applications
+- International career and e-commerce services
+- Embassy appointments and travel consultancy
+- Online courses and proficiency tests
+
+Let us guide you every step of the way! Simply explore the options below and get started on your journey with us.
+
+Feel free to reach out if you have any questions—we’re here to make things easy for you!
+
+We are currently in the registration period. You can continue to register or see our services. 
+If you need help, please type /help.
+If you need to contact us, use the command /contact.
+If you need a guide on how to use our services, we have prepared a tour guide here: /guide.
+        """,
+        reply_markup=markup,
+    )
 
 @fastapi_app.post(f"/{API_KEY}")
 async def aiogram_webhook(request: Request):

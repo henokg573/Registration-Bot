@@ -125,3 +125,4 @@ fastapi
 aiogram
 aiohttp
 unicorn
+python-dotenv
