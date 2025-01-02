@@ -130,54 +130,7 @@ If you need a guide on how to use our services, we have prepared a tour guide he
         reply_markup=markup,
     )
 
-@fastapi_app.post(f"/{API_KEY}")
-async def aiogram_webhook(request: Request):
-    update = await request.json()
-    await dp.process_update(aio_types.Update(**update))
-    return {"status": "ok"}
 
-# Async Ping Task for Healthcheck
-async def cyclic_ping():
-    while True:
-        try:
-            async with httpx.AsyncClient() as client:
-                response = await client.get(PING_ENDPOINT)
-                print(f"Pinging app: Status code {response.status_code}")
-            await asyncio.sleep(600)  # Ping every 10 minutes
-        except Exception as e:
-            print(f"Error in cyclic_ping: {e}")
-            await asyncio.sleep(60)  # Wait 1 minute before retrying
-
-# Thread for Telebot
-def run_telebot():
-    print("Starting Telebot...")
-    telebot_instance.polling()
-
-# Async Task for Aiogram
-async def run_aiogram():
-    print("Starting Aiogram...")
-    await dp.start_polling(aiogram_bot)
-
-# Dummy HTTP Server for Testing
-def start_dummy_server():
-    PORT = 8000
-    Handler = http.server.SimpleHTTPRequestHandler
-    with socketserver.TCPServer(("", PORT), Handler) as httpd:
-        print(f"Serving on port {PORT}")
-        httpd.serve_forever()
-
-# Main Entry Point
-if __name__ == "__main__":
-    # Start Telebot in a separate thread
-    telebot_thread = threading.Thread(target=run_telebot, daemon=True)
-    telebot_thread.start()
-
-    # Start Dummy HTTP Server in another thread
-    dummy_server_thread = threading.Thread(target=start_dummy_server, daemon=True)
-    dummy_server_thread.start()
-
-    # Run Aiogram in the main asyncio loop
-    asyncio.run(run_aiogram())
 
 
     
@@ -593,7 +546,54 @@ def payment_markup():
     return markup
 
 
+@fastapi_app.post(f"/{API_KEY}")
+async def aiogram_webhook(request: Request):
+    update = await request.json()
+    await dp.process_update(aio_types.Update(**update))
+    return {"status": "ok"}
 
+# Async Ping Task for Healthcheck
+async def cyclic_ping():
+    while True:
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(PING_ENDPOINT)
+                print(f"Pinging app: Status code {response.status_code}")
+            await asyncio.sleep(600)  # Ping every 10 minutes
+        except Exception as e:
+            print(f"Error in cyclic_ping: {e}")
+            await asyncio.sleep(60)  # Wait 1 minute before retrying
+
+# Thread for Telebot
+def run_telebot():
+    print("Starting Telebot...")
+    telebot_instance.polling()
+
+# Async Task for Aiogram
+async def run_aiogram():
+    print("Starting Aiogram...")
+    await dp.start_polling(aiogram_bot)
+
+# Dummy HTTP Server for Testing
+def start_dummy_server():
+    PORT = 8000
+    Handler = http.server.SimpleHTTPRequestHandler
+    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+        print(f"Serving on port {PORT}")
+        httpd.serve_forever()
+
+# Main Entry Point
+if __name__ == "__main__":
+    # Start Telebot in a separate thread
+    telebot_thread = threading.Thread(target=run_telebot, daemon=True)
+    telebot_thread.start()
+
+    # Start Dummy HTTP Server in another thread
+    dummy_server_thread = threading.Thread(target=start_dummy_server, daemon=True)
+    dummy_server_thread.start()
+
+    # Run Aiogram in the main asyncio loop
+    asyncio.run(run_aiogram())
 
 
 if __name__ == "__main__":
