@@ -87,10 +87,7 @@ def telebot_webhook():
         telebot_instance.process_new_updates([types.Update.de_json(update)])
     return {"status": "ok"}
 
-# Aiogram Handlers
-@dp.message(Command("help"))
-async def aiogram_help(message: aio_types.Message):
-    await message.answer("Welcome to the Aiogram bot! How can I assist you?")
+
 
 @dp.message(Command("start"))
 async def aiogram_start(message: aio_types.Message):
