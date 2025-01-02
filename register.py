@@ -39,7 +39,7 @@ router = Router()
 @router.message(Command("start"))
 async def start_command(message: Message):
     await message.answer("Hello! I'm the EasyGate registration bot. How can I help you?")
-    await message.answer("Please select a service to continue:")
+
 
 # Initialize the dispatcher
 dp = Dispatcher()
@@ -49,9 +49,9 @@ dp.include_router(router)
 
 # Start polling
 async def main():
-    await bot.delete_webhook(drop_pending_updates=True)  # Optional: Clear pending updates
+    bot.delete_webhook(drop_pending_updates=True)  # Optional: Clear pending updates
     await dp.start_polling(bot)
-
+    
 if __name__ == "__main__":
     asyncio.run(main())
 # FastAPI app
