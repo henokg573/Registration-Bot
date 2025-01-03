@@ -24,6 +24,7 @@ from telebot.types import ForceReply
 import telegram
 from telebot import types
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 API_KEY = "7759515826:AAEGkTviVdCKIC1rGwq0JCkqVwWUqXZ0LY4"
 ADMIN_CHAT_ID = "793034140"
