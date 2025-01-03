@@ -37,7 +37,7 @@ import requests
 import time
 
 # Replace with your Render app's URL
-URL = "https://yourappname.onrender.com/"  # Update with your Render deployment URL
+URL = "https://easygate-registration-bot-34qv.onrender.com"  # Update with your Render deployment URL
 INTERVAL = 30  # Interval in seconds
 
 def keep_alive():
