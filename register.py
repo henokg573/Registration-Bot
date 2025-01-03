@@ -2,30 +2,13 @@ from flask import Flask, request
 import telebot
 from telegram import Bot, Update
 from telebot import types
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import CommandHandler, Updater, CallbackContext, Application
 import os
 # from telegram.ext import Dispatcher
 from telebot.types import ForceReply
 import telegram
 from telebot import types
-
-API_KEY = "7759515826:AAEGkTviVdCKIC1rGwq0JCkqVwWUqXZ0LY4"
-ADMIN_CHAT_ID = "793034140"
-# API_KEY = os.getenv("API_KEY")
-# ADMIN_CHAT_ID  = os.getenv("ADMIN_CHAT_Id"")
-bot = telebot.TeleBot(API_KEY)
-
-
-import http.server
-import socketserver
-import threading
-
-
-
-    
-
-
-
 
 import email
 from flask import Flask, request
@@ -40,6 +23,36 @@ import os
 from telebot.types import ForceReply
 import telegram
 from telebot import types
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+
+API_KEY = "7759515826:AAEGkTviVdCKIC1rGwq0JCkqVwWUqXZ0LY4"
+ADMIN_CHAT_ID = "793034140"
+# API_KEY = os.getenv("API_KEY")
+# ADMIN_CHAT_ID  = os.getenv("ADMIN_CHAT_Id"")
+bot = telebot.TeleBot(API_KEY)
+
+
+import requests
+import time
+
+# Replace with your Render app's URL
+URL = "https://yourappname.onrender.com/"  # Update with your Render deployment URL
+INTERVAL = 30  # Interval in seconds
+
+def keep_alive():
+    while True:
+        try:
+            response = requests.get(URL)
+            print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Reloaded successfully: Status Code {response.status_code}")
+        except requests.exceptions.RequestException as e:
+            print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Error reloading: {e}")
+        time.sleep(INTERVAL)
+
+    
+
+
+
+
 
 
 bot = telebot.TeleBot(API_KEY)
@@ -55,20 +68,31 @@ app = Flask(__name__)
 #         bot.infinity_polling()
 #     except Exception as e:
 #         print(f"Error: {e}")
-import http.server
-import socketserver
-import threading
-import telebot
-from telebot import types
+# import http.server
+# import socketserver
+# import threading
+# import telebot
+# from telebot import types
 
 # Telegram bot token
 
 bot = telebot.TeleBot(API_KEY)
 
-# Function to run the Telegram bot
-def start_telegram_bot():
-    print("Starting Telegram bot...")
-    bot.polling()
+# # Function to run the Telegram bot
+# def start_telegram_bot():
+#     print("Starting Telegram bot...")
+#     bot.polling()
+
+# Function to start the dummy HTTP server
+# def start_dummy_server():
+#     PORT = 8000
+#     Handler = http.server.SimpleHTTPRequestHandler
+#     with socketserver.TCPServer(("", PORT), Handler) as httpd:
+#         print(f"Serving on port {PORT}")
+#         httpd.serve_forever()
+
+
+
 
 # Define the bot's handlers
 @bot.message_handler(commands=['start'])
@@ -113,13 +137,6 @@ If you need a guide on how to use our services, we have prepared a tour guide he
         reply_markup=markup,
     )
 
-# Function to start the dummy HTTP server
-def start_dummy_server():
-    PORT = 8000
-    Handler = http.server.SimpleHTTPRequestHandler
-    with socketserver.TCPServer(("", PORT), Handler) as httpd:
-        print(f"Serving on port {PORT}")
-        httpd.serve_forever()
 
 
     
@@ -187,6 +204,8 @@ def handle_options(message):
 
     Feel free to contact us via any of the platforms above for more information or to get started! 
     """, reply_markup = main_menu_markup())
+        
+
     elif message.text == "Our Services":
         bot.reply_to(
         message,
@@ -206,7 +225,8 @@ def handle_options(message):
     1️⃣3️⃣ Other Services
 
 📞 Contact us to learn more.""", reply_markup = main_menu_markup())
-    elif message.text == "Continue to  Register":
+        
+    elif message.text == "Continue to Register":
         bot.reply_to(
         message,
             """To register, we offer three ways, you can register through
@@ -375,10 +395,6 @@ def process_receipt(message):
     user_id = message.chat.id
     user_first_name = message.chat.first_name
 
-
-
-    
-
     if message.document:
         file_name = message.document.file_name
         file_extension = file_name.split('.')[-1].lower()  # Extract file extension
@@ -405,12 +421,11 @@ def process_receipt(message):
     pending_verifications[user_id] = {'file_id': receipt_file, 'file_type': file_type, 'user_name': user_first_name}
     bot.reply_to(message, "Your payment receipt has been sent for verification. The admin will confirm your payment shortly.")
     bot.send_message(ADMIN_CHAT_ID, f"📩 New Payment Receipt from {user_first_name} ({user_id}):")
-    # bot.send_message(ADMIN_CHAT_ID, registration_details)
 
     # Send Inline buttons to Admin for verification
-    markup = types.InlineKeyboardMarkup()
-    verify_button = types.InlineKeyboardButton("✅ Verify User", callback_data=f"verify_{user_id}")
-    invalid_button = types.InlineKeyboardButton("❌ Invalid Payment", callback_data=f"invalid_{user_id}")
+    markup = InlineKeyboardMarkup()
+    verify_button = InlineKeyboardButton("✅ Verify User", callback_data=f"verify_{user_id}")
+    invalid_button = InlineKeyboardButton("❌ Invalid Payment", callback_data=f"invalid_{user_id}")
     markup.add(verify_button, invalid_button)
     bot.send_message(ADMIN_CHAT_ID, "Please verify the payment from the user:", reply_markup=markup)
 
@@ -419,7 +434,7 @@ def process_receipt(message):
 @bot.callback_query_handler(func=lambda call: call.data.startswith('verify_') or call.data.startswith('invalid_'))
 def handle_admin_response(call):
     user_id = int(call.data.split('_')[1])
-    
+
     if call.data.startswith('verify_'):
         if user_id in pending_verifications:
             user_data[user_id] = pending_verifications.pop(user_id)
@@ -512,11 +527,17 @@ def payment_markup():
     return markup
 
 
+# Start the bot
+bot.polling(none_stop=True)
+
+
 
 
 if __name__ == "__main__":
-    # Start the dummy server in a separate thread
-    threading.Thread(target=start_dummy_server, daemon=True).start()
+    keep_alive()
+# if __name__ == "__main__":
+#     # Start the dummy server in a separate thread
+#     threading.Thread(target=start_dummy_server, daemon=True).start()
 
-    # Start the Telegram bot
-    start_telegram_bot()
+#     # Start the Telegram bot
+#     start_telegram_bot()
