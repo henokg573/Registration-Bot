@@ -33,25 +33,92 @@ ADMIN_CHAT_ID = "793034140"
 bot = telebot.TeleBot(API_KEY)
 
 
-import requests
-import time
+# import requests
+# import time
 
-# Replace with your Render app's URL
-URL = "https://easygate-registration-bot-34qv.onrender.com"  # Update with your Render deployment URL
-INTERVAL = 30  # Interval in seconds
+# # Replace with your Render app's URL
+# URL = "https://easygate-registration-bot-34qv.onrender.com"  # Update with your Render deployment URL
+# INTERVAL = 30  # Interval in seconds
 
-def keep_alive():
-    while True:
-        try:
-            response = requests.get(URL)
-            print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Reloaded successfully: Status Code {response.status_code}")
-        except requests.exceptions.RequestException as e:
-            print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Error reloading: {e}")
-        time.sleep(INTERVAL)
+# def keep_alive():
+#     while True:
+#         try:
+#             response = requests.get(URL)
+#             print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Reloaded successfully: Status Code {response.status_code}")
+#         except requests.exceptions.RequestException as e:
+#             print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Error reloading: {e}")
+#         time.sleep(INTERVAL)
 
     
 
+import threading
+import requests
+import socket
+import time
+from datetime import datetime
+from flask import Flask
+from apscheduler.schedulers.background import BackgroundScheduler
 
+# Flask App
+app = Flask(__name__)
+
+@app.route('/health')
+def health_check():
+    return "OK", 200
+
+# Global Variables
+url = "https://easygate-registration-bot-34qv.onrender.com"
+interval = 30  # Interval in seconds for reload script
+
+# Function to Reload Website
+def reload_website():
+    while True:
+        try:
+            response = requests.get(url)
+            print(f"Reloaded at {datetime.now().isoformat()}: Status Code {response.status_code}")
+        except requests.exceptions.RequestException as error:
+            print(f"Error reloading at {datetime.now().isoformat()}: {error}")
+        time.sleep(interval)
+
+# Function for Port Scanning
+def port_scanner():
+    target_host = "example.com"  # Replace with a valid target
+    ports = [80, 443, 22, 8080]
+    while True:
+        for port in ports:
+            try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(1)
+                result = sock.connect_ex((target_host, port))
+                sock.close()
+            except Exception as e:
+                print(f"Error scanning port {port}: {e}")
+        time.sleep(30)
+
+# Function for Periodic Keep-Alive Pings
+def periodic_task():
+    url = "https://easygate-registration-bot-34qv.onrender.com/health"
+    while True:
+        try:
+            response = requests.get(url)
+            print(f"Keep-alive ping sent: {response.status_code}")
+        except requests.RequestException as e:
+            print(f"Error in keep-alive ping: {e}")
+        time.sleep(300)  # 5 minutes
+
+# Threading for Concurrent Tasks
+if __name__ == "__main__":
+    # Start Flask app in a separate thread
+    threading.Thread(target=lambda: app.run(host="0.0.0.0", port=5000)).start()
+
+    # Start Reload Script
+    threading.Thread(target=reload_website).start()
+
+    # Start Port Scanner
+    threading.Thread(target=port_scanner).start()
+
+    # Start Periodic Task
+    threading.Thread(target=periodic_task).start()
 
 
 
@@ -390,7 +457,104 @@ def collect_email(message):
 
 
 
-# Handle the receipt submission and forward to admin
+
+
+
+# # payment process
+# # Handle the receipt submission and forward to admin
+# @bot.message_handler(content_types=['document', 'photo'])
+# def process_receipt(message):
+#     user_id = message.chat.id
+#     user_first_name = message.chat.first_name
+
+#     if message.document:
+#         file_name = message.document.file_name
+#         file_extension = file_name.split('.')[-1].lower()  # Extract file extension
+        
+#         # Check if the document is a PDF
+#         if file_extension == 'pdf':
+#             receipt_file = message.document.file_id
+#             file_type = 'PDF'
+#             bot.send_document(ADMIN_CHAT_ID, receipt_file)
+#         else:
+#             bot.reply_to(message, "Please send a valid receipt in PDF format.")
+#             return
+
+#     elif message.photo:
+#         receipt_file = message.photo[-1].file_id  # Get the highest quality photo
+#         file_type = 'Photo'
+#         bot.send_photo(ADMIN_CHAT_ID, receipt_file)
+
+#     else:
+#         bot.reply_to(message, "Please send a valid receipt in PDF or image format.")
+#         return
+
+#     # Inform the admin about the receipt submission
+#     pending_verifications[user_id] = {'file_id': receipt_file, 'file_type': file_type, 'user_name': user_first_name}
+#     bot.reply_to(message, "Your payment receipt has been sent for verification. The admin will confirm your payment shortly.")
+#     bot.send_message(ADMIN_CHAT_ID, f"📩 New Payment Receipt from {user_first_name} ({user_id}):")
+
+#     # Send Inline buttons to Admin for verification
+#     markup = InlineKeyboardMarkup()
+#     verify_button = InlineKeyboardButton("✅ Verify User", callback_data=f"verify_{user_id}")
+#     invalid_button = InlineKeyboardButton("❌ Invalid Payment", callback_data=f"invalid_{user_id}")
+#     markup.add(verify_button, invalid_button)
+#     bot.send_message(ADMIN_CHAT_ID, "Please verify the payment from the user:", reply_markup=markup)
+
+
+# # Handle admin verification actions
+# @bot.callback_query_handler(func=lambda call: call.data.startswith('verify_') or call.data.startswith('invalid_'))
+# def handle_admin_response(call):
+#     user_id = int(call.data.split('_')[1])
+
+#     if call.data.startswith('verify_'):
+#         if user_id in pending_verifications:
+#             user_data[user_id] = pending_verifications.pop(user_id)
+#             bot.send_message(user_id, "✅ Your payment has been verified! Please proceed to select your service. this is our channel, please join us [channel](https://t.me/easygate)", reply_markup=main_menu_markup())
+#         else:
+#             bot.send_message(ADMIN_CHAT_ID, "The user ID is not in the pending verifications.")
+
+#     elif call.data.startswith('invalid_'):
+#         if user_id in pending_verifications:
+#             pending_verifications.pop(user_id)
+#             bot.send_message(user_id, "❌ Your payment could not be verified. Please contact support.")
+#             bot.send_message(ADMIN_CHAT_ID, f"Payment invalid for {user_id}. User has been notified.")
+#         else:
+#             bot.send_message(ADMIN_CHAT_ID, "The user ID is not in the pending verifications.")
+
+#     bot.answer_callback_query(call.id)  # Close the callback button
+
+
+# def handle_service_selection(message):
+#     user_id = message.chat.id
+#     service_selected = message.text
+
+#     # Debug log
+#     print(f"User {user_id} selected the service: {service_selected}")
+
+#     if user_id in user_data:
+#         receipt_details = user_data[user_id]
+#         file_id = receipt_details['file_id']
+#         file_type = receipt_details['file_type']
+
+#         # Forward the receipt and service selection to the admin
+#         bot.send_message(ADMIN_CHAT_ID, f"📩 Verified Payment Receipt from {receipt_details['user_name']} ({user_id}):\n\nService: {service_selected}")
+#         if file_type == 'Document':
+#             bot.send_document(ADMIN_CHAT_ID, file_id)
+#         elif file_type == 'Photo':
+#             bot.send_photo(ADMIN_CHAT_ID, file_id)
+
+#         # Inform the user about the service selection
+
+#         # Clear the user's data after the service has been provided
+#         del user_data[user_id]
+#     else:
+#         bot.reply_to(message, "We could not find your payment details. Please resend your receipt.")
+#         bot.send_message(ADMIN_CHAT_ID, f"❌ User {user_id} has not submitted a valid receipt.")
+
+
+   
+# Handle receipt submission
 @bot.message_handler(content_types=['document', 'photo'])
 def process_receipt(message):
     user_id = message.chat.id
@@ -398,97 +562,64 @@ def process_receipt(message):
 
     if message.document:
         file_name = message.document.file_name
-        file_extension = file_name.split('.')[-1].lower()  # Extract file extension
-        
-        # Check if the document is a PDF
-        if file_extension == 'pdf':
+        file_extension = file_name.split('.')[-1].lower()
+
+        if file_extension == 'pdf':  # Check if the document is a PDF
             receipt_file = message.document.file_id
             file_type = 'PDF'
             bot.send_document(ADMIN_CHAT_ID, receipt_file)
         else:
             bot.reply_to(message, "Please send a valid receipt in PDF format.")
             return
-
     elif message.photo:
         receipt_file = message.photo[-1].file_id  # Get the highest quality photo
         file_type = 'Photo'
         bot.send_photo(ADMIN_CHAT_ID, receipt_file)
-
     else:
         bot.reply_to(message, "Please send a valid receipt in PDF or image format.")
         return
 
-    # Inform the admin about the receipt submission
+    # Inform admin about the receipt
     pending_verifications[user_id] = {'file_id': receipt_file, 'file_type': file_type, 'user_name': user_first_name}
     bot.reply_to(message, "Your payment receipt has been sent for verification. The admin will confirm your payment shortly.")
     bot.send_message(ADMIN_CHAT_ID, f"📩 New Payment Receipt from {user_first_name} ({user_id}):")
 
-    # Send Inline buttons to Admin for verification
+    # Add admin verification buttons
     markup = InlineKeyboardMarkup()
     verify_button = InlineKeyboardButton("✅ Verify User", callback_data=f"verify_{user_id}")
     invalid_button = InlineKeyboardButton("❌ Invalid Payment", callback_data=f"invalid_{user_id}")
     markup.add(verify_button, invalid_button)
     bot.send_message(ADMIN_CHAT_ID, "Please verify the payment from the user:", reply_markup=markup)
 
-
 # Handle admin verification actions
 @bot.callback_query_handler(func=lambda call: call.data.startswith('verify_') or call.data.startswith('invalid_'))
 def handle_admin_response(call):
     user_id = int(call.data.split('_')[1])
 
-    if call.data.startswith('verify_'):
-        if user_id in pending_verifications:
-            user_data[user_id] = pending_verifications.pop(user_id)
-            bot.send_message(user_id, "✅ Your payment has been verified! Please proceed to select your service. this is our channel, please join us [channel](https://t.me/easygate)", reply_markup=main_menu_markup())
-        else:
-            bot.send_message(ADMIN_CHAT_ID, "The user ID is not in the pending verifications.")
+    if user_id not in pending_verifications:
+        bot.send_message(ADMIN_CHAT_ID, "The user ID is not in the pending verifications.")
+        bot.answer_callback_query(call.id)  # Close the callback button
+        return
 
+    if call.data.startswith('verify_'):
+        user_details = pending_verifications.pop(user_id)
+        user_data[user_id] = user_details  # Store verified user data
+        bot.send_message(user_id, "✅ Your payment has been verified! Please join our Telegram channel using the link below:")
+        
+        # Send Telegram channel link
+        bot.send_message(
+            user_id,
+            "Join our Telegram channel for updates and news:\n[https://t.me/easygate](https://t.me/easygate)",
+            parse_mode="Markdown"
+        )
+
+        bot.send_message(ADMIN_CHAT_ID, f"Payment verified for {user_details['user_name']} ({user_id}).")
     elif call.data.startswith('invalid_'):
-        if user_id in pending_verifications:
-            pending_verifications.pop(user_id)
-            bot.send_message(user_id, "❌ Your payment could not be verified. Please contact support.")
-            bot.send_message(ADMIN_CHAT_ID, f"Payment invalid for {user_id}. User has been notified.")
-        else:
-            bot.send_message(ADMIN_CHAT_ID, "The user ID is not in the pending verifications.")
+        pending_verifications.pop(user_id)
+        bot.send_message(user_id, "❌ Your payment could not be verified. Please contact support.")
+        bot.send_message(ADMIN_CHAT_ID, f"Payment invalid for user ID {user_id}. User has been notified.")
 
     bot.answer_callback_query(call.id)  # Close the callback button
-
-
-def handle_service_selection(message):
-    user_id = message.chat.id
-    service_selected = message.text
-
-    # Debug log
-    print(f"User {user_id} selected the service: {service_selected}")
-
-    if user_id in user_data:
-        receipt_details = user_data[user_id]
-        file_id = receipt_details['file_id']
-        file_type = receipt_details['file_type']
-
-        # Forward the receipt and service selection to the admin
-        bot.send_message(ADMIN_CHAT_ID, f"📩 Verified Payment Receipt from {receipt_details['user_name']} ({user_id}):\n\nService: {service_selected}")
-        if file_type == 'Document':
-            bot.send_document(ADMIN_CHAT_ID, file_id)
-        elif file_type == 'Photo':
-            bot.send_photo(ADMIN_CHAT_ID, file_id)
-
-        # Inform the user about the service selection
-
-        # Clear the user's data after the service has been provided
-        del user_data[user_id]
-    else:
-        bot.reply_to(message, "We could not find your payment details. Please resend your receipt.")
-
-
-def process_receipt(message):
-    # Process receipt logic here
-    chat_id = message.chat.id
-    bot.send_message(
-        chat_id,
-        "Thank you for submitting your receipt. Please choose a payment method or let us know if you've already paid:",
-        reply_markup=payment_markup()  # Show the payment options
-    )
 
 def main_menu_markup():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)

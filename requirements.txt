@@ -126,3 +126,4 @@ aiogram
 aiohttp
 unicorn
 python-dotenv
+apscheduler
