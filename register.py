@@ -26,7 +26,7 @@ from telebot import types
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-API_KEY = "7759515826:AAEGkTviVdCKIC1rGwq0JCkqVwWUqXZ0LY4"
+API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
 ADMIN_CHAT_ID = "793034140"
 # API_KEY = os.getenv("API_KEY")
 # ADMIN_CHAT_ID  = os.getenv("ADMIN_CHAT_Id"")
@@ -127,30 +127,35 @@ def send_welcome(message):
     bot.reply_to(
         message,
         f"""👋 Hi {message.chat.first_name}! 
-        👋 Welcome to EasyGate!, 
-        Welcome to Your Gateway to Global Opportunities.
-        
-        Simplifying Your Path to Success.
-        From Dreams to Destinations.
-        Open Doors, Easy Journeys.
+        👋 Welcome to EasyGate!
+Your Gateway to Global Opportunities
 
-We’re thrilled to have you here! 🎉
+🌟 Simplifying Your Path to Success
+From Dreams to Destinations, we’re here to open doors and ensure smooth journeys.
+---
+We are delighted to have you with us!
 
-At EasyGate, we specialize in making your goals more accessible, whether it’s education, travel, or career growth. Here's what we can help you with:
-- Scholarship and admission opportunities
-- Passport and visa applications
-- International career and e-commerce services
-- Embassy appointments and travel consultancy
-- Online courses and proficiency tests
+At EasyGate, we specialize in making your aspirations achievable, whether in education, travel, or career advancement. Here’s how we can support you:
 
-Let us guide you every step of the way! Simply explore the options below and get started on your journey with us.
+🎓 Scholarship and Admission Assistance
+🛂 Passport and Visa Processing
+🌐 International Career and E-commerce Services
+🏛️ Embassy Appointments and Travel Consultancy
+💻 Online Courses and Proficiency Tests
 
-Feel free to reach out if you have any questions—we’re here to make things easy for you!
+---
 
-We are currently in the registration period. You can continue to register or see our services. 
-If you need help, please type /help.
-If you need to contact us, use the command /contact.
-If you need a guide on how to use our services, we have prepared a tour guide here: /guide.
+🔹 Registration Period Open!
+You can proceed with registration or explore our range of services.
+
+🔹 Need Assistance?
+
+Type /help for immediate guidance.
+Use /contact to connect with our support team.
+For a detailed guide on using our services, check out /guide.
+Let us simplify the complex and help you reach your goals effortlessly!
+---
+Thank you for choosing EasyGate. Let’s achieve greatness together!
         """,
         reply_markup=markup,
         )
@@ -162,14 +167,24 @@ If you need a guide on how to use our services, we have prepared a tour guide he
         if message.text == "Continue to  Register":
             bot.reply_to(
                 message,
-                 """To register, we offer three ways, you can register through
-            our google form link, you can contact us and register, and you can register through our bot.
-            please choose one of the options below to continue.""", reply_markup = register_markup())
+                 """To register, we offer three convenient options:
+
+1. Register through our Google Form link.  
+2. Contact us directly to complete your registration.  
+3. Register directly through our bot.
+
+Please choose one of the options below to continue.""", reply_markup = register_markup())
         elif message.text == "Feedback":
             bot.reply_to(
                 message,
-                """We value your feedback!. you can directly send your feedbacks to Admin
-                or you can send your feedbacks using our Google form link: please choose what suits you well"""
+                """We value your feedback!
+
+You can send your feedback in one of two ways:
+
+1. Directly to our Admin via the bot.  
+2. Submit your feedback using our Google Form link.
+
+Please choose the option that suits you best."""
                 , reply_markup = feedback_markup())
         
         elif message.text == "Already Registered?":
@@ -194,6 +209,16 @@ def send_guide(message):
 
 Explore and simplify your journey with EasyGate! 🌟""", reply_markup = main_menu_markup()
     )
+    if message.text == "Continue to Register":
+        bot.reply_to(
+        message,
+            """To register, we offer three ways:
+
+        1. You can register through our Google Form link.
+        2. You can contact us directly and register.
+        3. You can register through our bot.
+
+        Please choose one of the options below to continue.""", reply_markup = register_markup())
 
 
 
@@ -204,11 +229,23 @@ Explore and simplify your journey with EasyGate! 🌟""", reply_markup = main_me
 def send_guide(message):
     bot.reply_to(
         message,
-        """ to use this service, please hit /start
-        for guide, use this /guide
-        to  contact us, use this /contact
+        """ To use this service, please type /start.  
+
+For a guide on how to use the service, please type /guide.  
+
+To contact us, please use /contact.  
 """, reply_markup = main_menu_markup()
     )
+    if message.text == "Continue to Register":
+        bot.reply_to(
+        message,
+            """To register, we offer three ways:
+
+        1. You can register through our Google Form link.
+        2. You can contact us directly and register.
+        3. You can register through our bot.
+
+        Please choose one of the options below to continue.""", reply_markup = register_markup())
     # Contact Command
 @bot.message_handler(commands=['contact'])
 @bot.message_handler(func=lambda message: message.text == "Contact")
@@ -221,8 +258,30 @@ def send_guide(message):
         contact.easygate@gmail.com
         for help, use this /help
         to start using this service, use this /start""",reply_markup = main_menu_markup())
+    if message.text == "Continue to Register":
+        bot.reply_to(
+        message,
+            """To register, we offer three ways:
 
+        1. You can register through our Google Form link.
+        2. You can contact us directly and register.
+        3. You can register through our bot.
 
+        Please choose one of the options below to continue.""", reply_markup = register_markup())
+
+@bot.message_handler(func=lambda message: message.text == "Continue to Register")
+def handle_continue_to_register(message):
+    print(f"Message received: {message.text}")  # Debugging
+    service_selected = message.text  # Define service_selected  
+    if message.text == "Continue to Register":
+        bot.reply_to(
+            message,
+            """To register, we offer three ways:
+        1. You can register through our Google Form link.
+        2. You can contact us directly and register.
+        3. You can register through our bot."""
+    
+        , reply_markup = register_markup())
 @bot.message_handler(func=lambda message: True)
 def handle_options(message):
     print(f"Message received: {message.text}")  # Debugging
@@ -230,20 +289,21 @@ def handle_options(message):
     if message.text == 'About Us':
         bot.reply_to(
         message,
-        """Welcome to EasyGate! 
+        """Welcome to EasyGate!
 
-    We are a team of young Ethiopians, currently studying and working across the globe. Our mission is to simplify the process of accessing international education and career opportunities by reducing costs and eliminating the need for expensive intermediaries. 
+We are a team of young Ethiopians currently studying and working across the globe. Our mission is to simplify the process of accessing international education and career opportunities by reducing costs and eliminating the need for expensive intermediaries.
 
-    We aim to make services that can be accessed easily from home, such as visa applications, scholarship opportunities, and career guidance, more affordable and accessible to you.
+Our goal is to make services such as visa applications, scholarship opportunities, and career guidance more affordable and easily accessible from the comfort of your home.
 
-    At EasyGate, we're dedicated to guiding you through every step of your global journey, whether it's education, work, or travel. Let us help you unlock your future, right from the comfort of your home!.
-    Stay connected with us on our social media platforms to explore our services further:
+At EasyGate, we are dedicated to guiding you through every step of your global journey, whether it's education, work, or travel. Let us help you unlock your future, right from your home!
 
-     Telegram: @easygate or https://t.me/easygate
-     WhatsApp: 0964255107 or https://wa.me/0964255107
-     Email: contact.easygate@gmail.com
+Stay connected with us on our social media platforms to explore our services further:
 
-    Feel free to contact us via any of the platforms above for more information or to get started! 
+- Telegram: @easygate2 or [https://t.me/easygate2](https://t.me/easygate)
+- WhatsApp: 0964255107 or [https://wa.me/0964255107](https://wa.me/0964255107)
+- Email: contact.easygate@gmail.com
+
+Feel free to contact us via any of the platforms above for more information or to get started!
     """, reply_markup = main_menu_markup())
         
 
@@ -270,9 +330,13 @@ def handle_options(message):
     elif message.text == "Continue to Register":
         bot.reply_to(
         message,
-            """To register, we offer three ways, you can register through
-            our google form link, you can contact us and register, and you can register through our bot.
-            please choose one of the options below to continue.""", reply_markup = register_markup())
+            """To register, we offer three ways:
+
+        1. You can register through our Google Form link.
+        2. You can contact us directly and register.
+        3. You can register through our bot.
+
+        Please choose one of the options below to continue.""", reply_markup = register_markup())
     elif message.text == "Feedback":
         bot.reply_to(
         message,
@@ -284,9 +348,16 @@ def handle_options(message):
         message,
             """If you have already registered, please continue to the payment method""", reply_markup = payment_markup())
     elif message.text == "Google Form":
+        markup = InlineKeyboardMarkup()
+        form_button = InlineKeyboardButton("Click here to fill out the Google Form", url="https://forms.gle/pwapv5YrnVn81KWa6")
+        markup.add(form_button)
+    
         bot.reply_to(
         message,
-            """Please fill out the Google form to register: [Google Form](https://forms.gle/7oZ6z5f4v5ZnUv8dA)""", reply_markup = register_markup())
+        "Please use the button below to access the registration form.",
+        reply_markup=markup
+    )
+
     elif message.text == "Directly on Telegram":
         bot.reply_to(
             message,
@@ -295,9 +366,15 @@ def handle_options(message):
     elif message.text == "Bot Registration":
         start_registration(message)
     elif message.text == "Google Form feedback":
+        markup = InlineKeyboardMarkup()
+        form_button = InlineKeyboardButton("Click here to fill out the Google Form", url="https://forms.gle/RqPgyEHv5iSuQVav7")
+        markup.add(form_button)
+    
         bot.reply_to(
-            message,
-                """Please fill out the Google form to provide feedback: [Google Form](https://forms.gle/7oZ6z5f4v5ZnUv8dA)""", reply_markup = feedback_markup())
+        message,
+        "Please use the button below to access the registration form.",
+        reply_markup=markup
+    )
     elif message.text == "Directly to Admin":
         bot.reply_to(
             message,
@@ -333,42 +410,59 @@ def handle_options(message):
     elif message.text == "main menu":
         bot.reply_to(
             message,
-                """Welcome to EasyGate!
-                We are a team of young Ethiopians, currently studying and working across the globe. Our mission is to simplify the process of accessing international education and career opportunities by reducing costs and eliminating the need for expensive intermediaries.   
-                We aim to make services that can be accessed easily from home, such as visa applications, scholarship opportunities, and career guidance, more affordable and accessible to you.
-                At EasyGate, we're dedicated to guiding you through every step of your global journey, whether it's education, work, or travel. Let us help you unlock your future, right from the comfort of your home!.
-                Stay connected with us on our social media platforms to explore our services further:
-                Telegram: [@easygate](https://t.me/easygate)
-                WhatsApp: [0964255107](https://wa.me/0964255107)
-                Email: contact.easygate@gmail.com
-                Feel free to contact us via any of the platforms above for more information or to get started!""", reply_markup = main_menu_markup())
+                """
+Welcome back to EasyGate!
+
+We are a team of young Ethiopians, currently studying and working across the globe. Our mission is to simplify the process of accessing international education and career opportunities by reducing costs and eliminating the need for expensive intermediaries.
+
+We aim to make services that can be accessed easily from home, such as visa applications, scholarship opportunities, and career guidance, more affordable and accessible to you.
+
+At EasyGate, we're dedicated to guiding you through every step of your global journey, whether it's education, work, or travel. Let us help you unlock your future, right from the comfort of your home!
+
+Stay connected with us on our social media platforms to explore our services further:
+
+Telegram: @easygate2
+WhatsApp: 0964255107
+Email: contact.easygate@gmail.com
+Feel free to contact us via any of the platforms above for more information or to get started!
+""", reply_markup = main_menu_markup())
     else:
         bot.reply_to(
                 message,
-                "I don't understand that command. Please use the help commant."
+                "I don't understand that command. Please use the help command."
             )
 # Handle the feedback submission and forward to admin
 @bot.message_handler(func=lambda message: message.text == "Directly to Admin")
 def handle_direct_to_admin(message):
     bot.reply_to(
         message,
-        "Please send your feedback now. I'll forward it to the admin."
+        "Please send your feedback directly to the admin. Your message will be forwarded.",
+        reply_markup=feedback_markup()  # Ensure you have the correct markup
     )
     
-    # Register a handler to capture the next message as feedback
+    # Register the next step to capture the user's feedback message
     bot.register_next_step_handler(message, forward_feedback_to_admin)
 
+
 def forward_feedback_to_admin(message):
-    # Send the user's feedback to the admin
-    try:
-        bot.send_message(
-            ADMIN_CHAT_ID,
-            f"Feedback from @{message.from_user.username or message.from_user.first_name}:\n{message.text}"
-        )
-        bot.reply_to(message, "Thank you! Your feedback has been sent to the admin.")
-    except Exception as e:
-        bot.reply_to(message, "Oops! Something went wrong while sending your feedback.")
-        print(f"Error: {e}")
+    user_feedback = message.text
+    user_name = message.from_user.username or "No username"
+    admin_chat_id = "793034140"  # Replace with the admin's chat ID
+
+    # Create the message that will be sent to the admin
+    feedback_message = (
+        f"New feedback received:\n\n"
+        f"From: @{user_name}\n"
+        f"Message: {user_feedback}"
+    )
+
+    # Send the feedback message to the admin
+    bot.send_message(admin_chat_id, feedback_message)
+
+    # Confirm to the user that their feedback has been sent
+    bot.reply_to(message, "Your feedback has been sent to the admin. Thank you!")
+
+
 
 
 @bot.message_handler(func=lambda message: message.text == "Bot Registration")
@@ -498,32 +592,32 @@ def collect_email(message):
 #     bot.answer_callback_query(call.id)  # Close the callback button
 
 
-# def handle_service_selection(message):
-#     user_id = message.chat.id
-#     service_selected = message.text
+def handle_service_selection(message):
+    user_id = message.chat.id
+    service_selected = message.text
 
-#     # Debug log
-#     print(f"User {user_id} selected the service: {service_selected}")
+    # Debug log
+    print(f"User {user_id} selected the service: {service_selected}")
 
-#     if user_id in user_data:
-#         receipt_details = user_data[user_id]
-#         file_id = receipt_details['file_id']
-#         file_type = receipt_details['file_type']
+    if user_id in user_data:
+        receipt_details = user_data[user_id]
+        file_id = receipt_details['file_id']
+        file_type = receipt_details['file_type']
 
-#         # Forward the receipt and service selection to the admin
-#         bot.send_message(ADMIN_CHAT_ID, f"📩 Verified Payment Receipt from {receipt_details['user_name']} ({user_id}):\n\nService: {service_selected}")
-#         if file_type == 'Document':
-#             bot.send_document(ADMIN_CHAT_ID, file_id)
-#         elif file_type == 'Photo':
-#             bot.send_photo(ADMIN_CHAT_ID, file_id)
+        # Forward the receipt and service selection to the admin
+        bot.send_message(ADMIN_CHAT_ID, f"📩 Verified Payment Receipt from {receipt_details['user_name']} ({user_id}):\n\nService: {service_selected}")
+        if file_type == 'Document':
+            bot.send_document(ADMIN_CHAT_ID, file_id)
+        elif file_type == 'Photo':
+            bot.send_photo(ADMIN_CHAT_ID, file_id)
 
-#         # Inform the user about the service selection
+        # Inform the user about the service selection
 
-#         # Clear the user's data after the service has been provided
-#         del user_data[user_id]
-#     else:
-#         bot.reply_to(message, "We could not find your payment details. Please resend your receipt.")
-#         bot.send_message(ADMIN_CHAT_ID, f"❌ User {user_id} has not submitted a valid receipt.")
+        # Clear the user's data after the service has been provided
+        del user_data[user_id]
+    else:
+        bot.reply_to(message, "We could not find your payment details. Please resend your receipt.")
+        bot.send_message(ADMIN_CHAT_ID, f"❌ User {user_id} has not submitted a valid receipt.")
 
 
    
@@ -579,11 +673,16 @@ def handle_admin_response(call):
         user_data[user_id] = user_details  # Store verified user data
         bot.send_message(user_id, "✅ Your payment has been verified! Please join our Telegram channel using the link below:")
         
+         # Create an inline keyboard with the channel link
+        markup = types.InlineKeyboardMarkup()
+        button = types.InlineKeyboardButton("Join our Telegram channel", url="https://t.me/easygate")
+        markup.add(button)
+
         # Send Telegram channel link
         bot.send_message(
             user_id,
-            "Join our Telegram channel for updates and news:\n[https://t.me/easygate](https://t.me/easygate)",
-            parse_mode="Markdown"
+            "Click below to join our Telegram channel for updates and news:",
+            reply_markup=markup
         )
 
         bot.send_message(ADMIN_CHAT_ID, f"Payment verified for {user_details['user_name']} ({user_id}).")
@@ -594,11 +693,14 @@ def handle_admin_response(call):
 
     bot.answer_callback_query(call.id)  # Close the callback button
 
+
+
+
 def main_menu_markup():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     btn1 = types.KeyboardButton('About Us')
     btn2 = types.KeyboardButton('Our Services')
-    btn3 = types.KeyboardButton('Continue to  Register')
+    btn3 = types.KeyboardButton('Continue to Register')
     btn4 = types.KeyboardButton('Feedback')
     btn5 = types.KeyboardButton('Already Registered?')
     markup.add(btn1, btn2, btn3, btn4, btn5)

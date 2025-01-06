@@ -1,6 +1,0 @@
-import os
-
-API_KEY = os.getenv("TELEGRAM_API_KEY")
-ADMIN_CHAT_ID = os.getenv("ADMIN_CHAT_ID")
-WEBHOOK_HOST = os.getenv("WEBHOOK_HOST")
-WEBHOOK_URL = f"{WEBHOOK_HOST}/{API_KEY}"
