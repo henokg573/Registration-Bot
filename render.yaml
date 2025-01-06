@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: telegram-bot
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python register.py  # Replace with your script filename
+    envVars:
+      - key: API_KEY
+        value: "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
+      - key: ADMIN_ID
+        value: "793034140"

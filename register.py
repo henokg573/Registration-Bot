@@ -9,6 +9,8 @@ import os
 from telebot.types import ForceReply
 import telegram
 from telebot import types
+# import os
+import time
 
 import email
 from flask import Flask, request
@@ -36,6 +38,7 @@ bot = telebot.TeleBot(API_KEY)
 
     
 
+import telebot
 import threading
 import requests
 import socket
@@ -46,7 +49,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import http.server
 import socketserver
 
-# Flask App
+# Flask App for Health Check
 app = Flask(__name__)
 
 @app.route('/health')
@@ -54,7 +57,7 @@ def health_check():
     return "OK", 200
 
 
-# Function for Port Scanning
+# Function for Port Scanning (you can adjust as needed)
 def port_scanner():
     target_host = "example.com"  # Replace with a valid target
     ports = [80, 443, 22, 8080]
@@ -69,6 +72,7 @@ def port_scanner():
                 print(f"Error scanning port {port}: {e}")
         time.sleep(30)
 
+
 # Function for Periodic Keep-Alive Pings
 def periodic_task():
     url = "https://easygate-registration-bot-34qv.onrender.com/health"
@@ -81,33 +85,53 @@ def periodic_task():
         time.sleep(300)  # 5 minutes
 
 
-
-
-
+# Telegram bot setup
+API_KEY = 'your_bot_api_key'  # Add your bot's API key
 bot = telebot.TeleBot(API_KEY)
 
+ADMIN_CHAT_ID = '793034140'  # Admin chat id from Telegram
 
-ADMIN_CHAT_ID = '793034140'  # Admin chat id from telegram
-
-# Initialize the Flask app
-
-bot.remove_webhook()
-
-
-bot = telebot.TeleBot(API_KEY)
-
-# Function to run the Telegram bot
+# Define function to start the Telegram bot
 def start_telegram_bot():
     print("Starting Telegram bot...")
-    bot.polling()
+    bot.polling(none_stop=True, interval=0)
 
-# Function to start the dummy HTTP server
-def start_dummy_server():
-    PORT = 8000
-    Handler = http.server.SimpleHTTPRequestHandler
-    with socketserver.TCPServer(("", PORT), Handler) as httpd:
-        print(f"Serving on port {PORT}")
-        httpd.serve_forever()
+
+# Function to start the Flask app
+def start_flask_app():
+    app.run(host="0.0.0.0", port=5000)  # Make sure it's listening on 0.0.0.0 for external access
+
+
+# Initialize and start background tasks
+def start_background_tasks():
+    # Initialize the scheduler
+    scheduler = BackgroundScheduler()
+
+    # Add periodic tasks to scheduler
+    scheduler.add_job(periodic_task, 'interval', minutes=5)  # Periodic keep-alive ping
+    scheduler.add_job(port_scanner, 'interval', seconds=30)  # Port scanning every 30 seconds
+
+    # Start the scheduler
+    scheduler.start()
+
+# Main entry point for running both Flask app and Telegram bot
+if __name__ == "__main__":
+    # Start the Flask app in a separate thread
+    flask_thread = threading.Thread(target=start_flask_app)
+    flask_thread.daemon = True
+    flask_thread.start()
+
+    # Start the Telegram bot
+    telegram_thread = threading.Thread(target=start_telegram_bot)
+    telegram_thread.daemon = True
+    telegram_thread.start()
+
+    # Start background tasks (like keep-alive and port scanning)
+    start_background_tasks()
+
+    # Run Flask app until interrupted
+    while True:
+        time.sleep(1)
 
 
 
