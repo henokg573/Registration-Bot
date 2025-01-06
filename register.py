@@ -86,7 +86,7 @@ def periodic_task():
 
 
 # Telegram bot setup
-API_KEY = 'your_bot_api_key'  # Add your bot's API key
+# API_KEY = '7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0'  # Add your bot's API key
 bot = telebot.TeleBot(API_KEY)
 
 ADMIN_CHAT_ID = '793034140'  # Admin chat id from Telegram
