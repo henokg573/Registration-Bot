@@ -33,21 +33,6 @@ ADMIN_CHAT_ID = "793034140"
 bot = telebot.TeleBot(API_KEY)
 
 
-# import requests
-# import time
-
-# # Replace with your Render app's URL
-# URL = "https://easygate-registration-bot-34qv.onrender.com"  # Update with your Render deployment URL
-# INTERVAL = 30  # Interval in seconds
-
-# def keep_alive():
-#     while True:
-#         try:
-#             response = requests.get(URL)
-#             print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Reloaded successfully: Status Code {response.status_code}")
-#         except requests.exceptions.RequestException as e:
-#             print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Error reloading: {e}")
-#         time.sleep(INTERVAL)
 
     
 
@@ -58,6 +43,8 @@ import time
 from datetime import datetime
 from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
+import http.server
+import socketserver
 
 # Flask App
 app = Flask(__name__)
@@ -66,19 +53,6 @@ app = Flask(__name__)
 def health_check():
     return "OK", 200
 
-# Global Variables
-url = "https://easygate-registration-bot-34qv.onrender.com"
-interval = 30  # Interval in seconds for reload script
-
-# Function to Reload Website
-def reload_website():
-    while True:
-        try:
-            response = requests.get(url)
-            print(f"Reloaded at {datetime.now().isoformat()}: Status Code {response.status_code}")
-        except requests.exceptions.RequestException as error:
-            print(f"Error reloading at {datetime.now().isoformat()}: {error}")
-        time.sleep(interval)
 
 # Function for Port Scanning
 def port_scanner():
@@ -106,19 +80,6 @@ def periodic_task():
             print(f"Error in keep-alive ping: {e}")
         time.sleep(300)  # 5 minutes
 
-# Threading for Concurrent Tasks
-if __name__ == "__main__":
-    # Start Flask app in a separate thread
-    threading.Thread(target=lambda: app.run(host="0.0.0.0", port=5000)).start()
-
-    # Start Reload Script
-    threading.Thread(target=reload_website).start()
-
-    # Start Port Scanner
-    threading.Thread(target=port_scanner).start()
-
-    # Start Periodic Task
-    threading.Thread(target=periodic_task).start()
 
 
 
@@ -130,34 +91,23 @@ ADMIN_CHAT_ID = '793034140'  # Admin chat id from telegram
 
 # Initialize the Flask app
 
-app = Flask(__name__)
-# if __name__ == "__main__":
-#     try:
-#         bot.infinity_polling()
-#     except Exception as e:
-#         print(f"Error: {e}")
-# import http.server
-# import socketserver
-# import threading
-# import telebot
-# from telebot import types
+bot.remove_webhook()
 
-# Telegram bot token
 
 bot = telebot.TeleBot(API_KEY)
 
-# # Function to run the Telegram bot
-# def start_telegram_bot():
-#     print("Starting Telegram bot...")
-#     bot.polling()
+# Function to run the Telegram bot
+def start_telegram_bot():
+    print("Starting Telegram bot...")
+    bot.polling()
 
 # Function to start the dummy HTTP server
-# def start_dummy_server():
-#     PORT = 8000
-#     Handler = http.server.SimpleHTTPRequestHandler
-#     with socketserver.TCPServer(("", PORT), Handler) as httpd:
-#         print(f"Serving on port {PORT}")
-#         httpd.serve_forever()
+def start_dummy_server():
+    PORT = 8000
+    Handler = http.server.SimpleHTTPRequestHandler
+    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+        print(f"Serving on port {PORT}")
+        httpd.serve_forever()
 
 
 
@@ -203,8 +153,31 @@ If you need to contact us, use the command /contact.
 If you need a guide on how to use our services, we have prepared a tour guide here: /guide.
         """,
         reply_markup=markup,
-    )
-
+        )
+    
+    @bot.message_handler(func=lambda message: True)
+    def handle_options(message):
+        print(f"Message received: {message.text}")  # Debugging
+        service_selected = message.text  # Define service_selected
+        if message.text == "Continue to  Register":
+            bot.reply_to(
+                message,
+                 """To register, we offer three ways, you can register through
+            our google form link, you can contact us and register, and you can register through our bot.
+            please choose one of the options below to continue.""", reply_markup = register_markup())
+        elif message.text == "Feedback":
+            bot.reply_to(
+                message,
+                """We value your feedback!. you can directly send your feedbacks to Admin
+                or you can send your feedbacks using our Google form link: please choose what suits you well"""
+                , reply_markup = feedback_markup())
+        
+        elif message.text == "Already Registered?":
+            bot.reply_to(
+                message,
+                "If you have already registered, please continue to the payment method",
+                reply_markup=payment_markup()
+            )
 
 
     
@@ -665,11 +638,10 @@ bot.polling(none_stop=True)
 
 
 
+# def start_telegram_bot():
 if __name__ == "__main__":
-    keep_alive()
-# if __name__ == "__main__":
-#     # Start the dummy server in a separate thread
-#     threading.Thread(target=start_dummy_server, daemon=True).start()
+    # Start the dummy server in a separate thread
+    threading.Thread(target=start_dummy_server, daemon=True).start()
 
-#     # Start the Telegram bot
-#     start_telegram_bot()
+    # Start the Telegram bot
+    start_telegram_bot()
