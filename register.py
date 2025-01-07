@@ -49,89 +49,78 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import http.server
 import socketserver
 
-# Flask App for Health Check
+from flask import Flask
+import time
+import threading
+import requests
+from apscheduler.schedulers.background import BackgroundScheduler
+import telebot
+
+# Flask app setup
 app = Flask(__name__)
 
-@app.route('/health')
+# Health check route
+@app.route('/health', methods=['GET'])
 def health_check():
     return "OK", 200
 
+# # Telegram bot setup
+# API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
+# ADMIN_CHAT_ID = "793034140"
+# bot = telebot.TeleBot(API_KEY)
 
-# Function for Port Scanning (you can adjust as needed)
-def port_scanner():
-    target_host = "example.com"  # Replace with a valid target
-    ports = [80, 443, 22, 8080]
-    while True:
-        for port in ports:
-            try:
-                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                sock.settimeout(1)
-                result = sock.connect_ex((target_host, port))
-                sock.close()
-            except Exception as e:
-                print(f"Error scanning port {port}: {e}")
-        time.sleep(30)
+# # Command to test bot functionality
+# @bot.message_handler(commands=['start'])
+# def start(message):
+#     bot.reply_to(message, "Hello! I'm alive and working!")
 
-
-# Function for Periodic Keep-Alive Pings
-def periodic_task():
+# Function to periodically send a keep-alive ping
+def periodic_keep_alive():
     url = "https://easygate-registration-bot-34qv.onrender.com/health"
-    while True:
-        try:
-            response = requests.get(url)
-            print(f"Keep-alive ping sent: {response.status_code}")
-        except requests.RequestException as e:
-            print(f"Error in keep-alive ping: {e}")
-        time.sleep(300)  # 5 minutes
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            print("Keep-alive ping successful!")
+        else:
+            print(f"Keep-alive ping failed with status code: {response.status_code}")
+    except requests.RequestException as e:
+        print(f"Error in keep-alive ping: {e}")
 
+# Function to start the Flask app
+def start_flask_app():
+    app.run(host="0.0.0.0", port=5000)
 
-# Telegram bot setup
-# API_KEY = '7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0'  # Add your bot's API key
-bot = telebot.TeleBot(API_KEY)
-
-ADMIN_CHAT_ID = '793034140'  # Admin chat id from Telegram
-
-# Define function to start the Telegram bot
+# Function to start the Telegram bot
 def start_telegram_bot():
     print("Starting Telegram bot...")
     bot.polling(none_stop=True, interval=0)
 
-
-# Function to start the Flask app
-def start_flask_app():
-    app.run(host="0.0.0.0", port=5000)  # Make sure it's listening on 0.0.0.0 for external access
-
-
-# Initialize and start background tasks
+# Background task scheduler
 def start_background_tasks():
-    # Initialize the scheduler
     scheduler = BackgroundScheduler()
-
-    # Add periodic tasks to scheduler
-    scheduler.add_job(periodic_task, 'interval', minutes=5)  # Periodic keep-alive ping
-    scheduler.add_job(port_scanner, 'interval', seconds=30)  # Port scanning every 30 seconds
-
-    # Start the scheduler
+    scheduler.add_job(periodic_keep_alive, 'interval', minutes=5)  # Ping every 5 minutes
     scheduler.start()
 
-# Main entry point for running both Flask app and Telegram bot
+# Main entry point
 if __name__ == "__main__":
-    # Start the Flask app in a separate thread
-    flask_thread = threading.Thread(target=start_flask_app)
-    flask_thread.daemon = True
+    # Start Flask app in a separate thread
+    flask_thread = threading.Thread(target=start_flask_app, daemon=True)
     flask_thread.start()
 
-    # Start the Telegram bot
-    telegram_thread = threading.Thread(target=start_telegram_bot)
-    telegram_thread.daemon = True
+    # Start Telegram bot in a separate thread
+    telegram_thread = threading.Thread(target=start_telegram_bot, daemon=True)
     telegram_thread.start()
 
-    # Start background tasks (like keep-alive and port scanning)
+    # Start background tasks for keep-alive
     start_background_tasks()
 
-    # Run Flask app until interrupted
-    while True:
-        time.sleep(1)
+    # Keep the main thread alive
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("Shutting down...")
+
 
 
 
@@ -764,10 +753,10 @@ bot.polling(none_stop=True)
 
 
 
-# def start_telegram_bot():
-if __name__ == "__main__":
-    # Start the dummy server in a separate thread
-    threading.Thread(target=start_dummy_server, daemon=True).start()
+# # def start_telegram_bot():
+# if __name__ == "__main__":
+#     # Start the dummy server in a separate thread
+#     threading.Thread(target=start_dummy_server, daemon=True).start()
 
-    # Start the Telegram bot
-    start_telegram_bot()
+#     # Start the Telegram bot
+#     start_telegram_bot()
