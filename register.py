@@ -583,70 +583,6 @@ def collect_email(message):
 
 
 
-# # payment process
-# # Handle the receipt submission and forward to admin
-# @bot.message_handler(content_types=['document', 'photo'])
-# def process_receipt(message):
-#     user_id = message.chat.id
-#     user_first_name = message.chat.first_name
-
-#     if message.document:
-#         file_name = message.document.file_name
-#         file_extension = file_name.split('.')[-1].lower()  # Extract file extension
-        
-#         # Check if the document is a PDF
-#         if file_extension == 'pdf':
-#             receipt_file = message.document.file_id
-#             file_type = 'PDF'
-#             bot.send_document(ADMIN_CHAT_ID, receipt_file)
-#         else:
-#             bot.reply_to(message, "Please send a valid receipt in PDF format.")
-#             return
-
-#     elif message.photo:
-#         receipt_file = message.photo[-1].file_id  # Get the highest quality photo
-#         file_type = 'Photo'
-#         bot.send_photo(ADMIN_CHAT_ID, receipt_file)
-
-#     else:
-#         bot.reply_to(message, "Please send a valid receipt in PDF or image format.")
-#         return
-
-#     # Inform the admin about the receipt submission
-#     pending_verifications[user_id] = {'file_id': receipt_file, 'file_type': file_type, 'user_name': user_first_name}
-#     bot.reply_to(message, "Your payment receipt has been sent for verification. The admin will confirm your payment shortly.")
-#     bot.send_message(ADMIN_CHAT_ID, f"📩 New Payment Receipt from {user_first_name} ({user_id}):")
-
-#     # Send Inline buttons to Admin for verification
-#     markup = InlineKeyboardMarkup()
-#     verify_button = InlineKeyboardButton("✅ Verify User", callback_data=f"verify_{user_id}")
-#     invalid_button = InlineKeyboardButton("❌ Invalid Payment", callback_data=f"invalid_{user_id}")
-#     markup.add(verify_button, invalid_button)
-#     bot.send_message(ADMIN_CHAT_ID, "Please verify the payment from the user:", reply_markup=markup)
-
-
-# # Handle admin verification actions
-# @bot.callback_query_handler(func=lambda call: call.data.startswith('verify_') or call.data.startswith('invalid_'))
-# def handle_admin_response(call):
-#     user_id = int(call.data.split('_')[1])
-
-#     if call.data.startswith('verify_'):
-#         if user_id in pending_verifications:
-#             user_data[user_id] = pending_verifications.pop(user_id)
-#             bot.send_message(user_id, "✅ Your payment has been verified! Please proceed to select your service. this is our channel, please join us [channel](https://t.me/easygate)", reply_markup=main_menu_markup())
-#         else:
-#             bot.send_message(ADMIN_CHAT_ID, "The user ID is not in the pending verifications.")
-
-#     elif call.data.startswith('invalid_'):
-#         if user_id in pending_verifications:
-#             pending_verifications.pop(user_id)
-#             bot.send_message(user_id, "❌ Your payment could not be verified. Please contact support.")
-#             bot.send_message(ADMIN_CHAT_ID, f"Payment invalid for {user_id}. User has been notified.")
-#         else:
-#             bot.send_message(ADMIN_CHAT_ID, "The user ID is not in the pending verifications.")
-
-#     bot.answer_callback_query(call.id)  # Close the callback button
-
 
 def handle_service_selection(message):
     user_id = message.chat.id
@@ -790,11 +726,7 @@ def payment_markup():
     return markup
 
 
-# Start the bot
-bot.polling(none_stop=True)
 
-
-
-def start_telegram_bot():
-    print("Starting Telegram bot...")
-    bot.polling(none_stop=True, interval=0)
+# Start the bot by calling the function
+if __name__ == "__main__":
+    start_telegram_bot()
