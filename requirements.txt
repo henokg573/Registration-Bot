@@ -128,3 +128,8 @@ unicorn
 python-dotenv
 gunicorn
 apscheduler
+
+
+pyTelegramBotAPI
+flask
+
