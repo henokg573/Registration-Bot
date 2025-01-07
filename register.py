@@ -64,15 +64,58 @@ app = Flask(__name__)
 def health_check():
     return "OK", 200
 
-# # Telegram bot setup
-# API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
-# ADMIN_CHAT_ID = "793034140"
-# bot = telebot.TeleBot(API_KEY)
+# Telegram bot setup
+API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
+ADMIN_CHAT_ID = "793034140"
+bot = telebot.TeleBot(API_KEY)
 
-# # Command to test bot functionality
-# @bot.message_handler(commands=['start'])
-# def start(message):
-#     bot.reply_to(message, "Hello! I'm alive and working!")
+# Command to test bot functionality
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    print(f"Received /start from {message.chat.id}")  # Debugging
+
+    # Create markup for reply keyboard
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    btn1 = types.KeyboardButton('About Us')
+    btn2 = types.KeyboardButton('Our Services')
+    btn3 = types.KeyboardButton('Continue to Register')
+    btn4 = types.KeyboardButton('Feedback')
+    markup.add(btn1, btn2, btn3, btn4)
+
+    bot.reply_to(
+        message,f"""👋 Hi {message.chat.first_name}! 
+        👋 Welcome to EasyGate!
+Your Gateway to Global Opportunities
+
+🌟 Simplifying Your Path to Success
+From Dreams to Destinations, we’re here to open doors and ensure smooth journeys.
+---
+We are delighted to have you with us!
+
+At EasyGate, we specialize in making your aspirations achievable, whether in education, travel, or career advancement. Here’s how we can support you:
+
+🎓 Scholarship and Admission Assistance
+🛂 Passport and Visa Processing
+🌐 International Career and E-commerce Services
+🏛️ Embassy Appointments and Travel Consultancy
+💻 Online Courses and Proficiency Tests
+
+---
+
+🔹 Registration Period Open!
+You can proceed with registration or explore our range of services.
+
+🔹 Need Assistance?
+
+Type /help for immediate guidance.
+Use /contact to connect with our support team.
+For a detailed guide on using our services, check out /guide.
+Let us simplify the complex and help you reach your goals effortlessly!
+---
+Thank you for choosing EasyGate. Let’s achieve greatness together!
+        """,
+        reply_markup=markup,
+        )
 
 # Function to periodically send a keep-alive ping
 def periodic_keep_alive():
@@ -752,11 +795,6 @@ bot.polling(none_stop=True)
 
 
 
-
-# # def start_telegram_bot():
-# if __name__ == "__main__":
-#     # Start the dummy server in a separate thread
-#     threading.Thread(target=start_dummy_server, daemon=True).start()
-
-#     # Start the Telegram bot
-#     start_telegram_bot()
+def start_telegram_bot():
+    print("Starting Telegram bot...")
+    bot.polling(none_stop=True, interval=0)
