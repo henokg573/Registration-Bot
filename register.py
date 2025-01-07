@@ -798,6 +798,7 @@ def payment_markup():
 if __name__ == "__main__":
     start_telegram_bot()
 
-if __name__ == "__main__":
-    bot.remove_webhook()  # Clear previous webhooks
-    bot.set_webhook(url="https://easygate-registration-bot-34qv.onrender.com/telegram_webhook")  # Set the webhook URL
+bot.remove_webhook()
+# if __name__ == "__main__":
+#     bot.remove_webhook()  # Clear previous webhooks
+#     bot.set_webhook(url="https://easygate-registration-bot-34qv.onrender.com/telegram_webhook")  # Set the webhook URL
