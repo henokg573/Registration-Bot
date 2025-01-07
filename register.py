@@ -56,95 +56,43 @@ import requests
 from apscheduler.schedulers.background import BackgroundScheduler
 import telebot
 
-# Flask app setup
 app = Flask(__name__)
 
-# Health check route
 @app.route('/health', methods=['GET'])
 def health_check():
     return "OK", 200
 
-
-
 # Command to test bot functionality
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    print(f"Received /start from {message.chat.id}")  # Debugging
-
-    # Create markup for reply keyboard
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     btn1 = types.KeyboardButton('About Us')
     btn2 = types.KeyboardButton('Our Services')
     btn3 = types.KeyboardButton('Continue to Register')
     btn4 = types.KeyboardButton('Feedback')
-    btn5 = types.KeyboardButton('Already Registered?')
-    markup.add(btn1, btn2, btn3, btn4,btn5)
+    markup.add(btn1, btn2, btn3, btn4)
 
-    bot.reply_to(
-        message,f"""👋 Hi {message.chat.first_name}! 
-        👋 Welcome to EasyGate!
-Your Gateway to Global Opportunities
+    bot.reply_to(message, "Welcome to EasyGate!", reply_markup=markup)
 
-🌟 Simplifying Your Path to Success
-From Dreams to Destinations, we’re here to open doors and ensure smooth journeys.
----
-We are delighted to have you with us!
+@bot.message_handler(func=lambda message: message.text == "About Us")
+def handle_about_us(message):
+    bot.reply_to(message, "This is about us!")
 
-At EasyGate, we specialize in making your aspirations achievable, whether in education, travel, or career advancement. Here’s how we can support you:
+@bot.message_handler(func=lambda message: message.text == "Our Services")
+def handle_our_services(message):
+    bot.reply_to(message, "These are our services!")
 
-🎓 Scholarship and Admission Assistance
-🛂 Passport and Visa Processing
-🌐 International Career and E-commerce Services
-🏛️ Embassy Appointments and Travel Consultancy
-💻 Online Courses and Proficiency Tests
+@bot.message_handler(func=lambda message: message.text == "Continue to Register")
+def handle_continue_to_register(message):
+    bot.reply_to(message, "Let's continue with registration!")
 
----
-
-🔹 Registration Period Open!
-You can proceed with registration or explore our range of services.
-
-🔹 Need Assistance?
-
-Type /help for immediate guidance.
-Use /contact to connect with our support team.
-For a detailed guide on using our services, check out /guide.
-Let us simplify the complex and help you reach your goals effortlessly!
----
-Thank you for choosing EasyGate. Let’s achieve greatness together!
-        """,
-        reply_markup=markup,
-        )
-    
-
-
-
-
-# Function to periodically send a keep-alive ping
-def periodic_keep_alive():
-    url = "https://easygate-registration-bot-34qv.onrender.com/health"
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            print("Keep-alive ping successful!")
-        else:
-            print(f"Keep-alive ping failed with status code: {response.status_code}")
-    except requests.RequestException as e:
-        print(f"Error in keep-alive ping: {e}")
-
-# Function to start the Flask app
+# Function to run Flask app
 def start_flask_app():
     app.run(host="0.0.0.0", port=5000)
 
-# Function to start the Telegram bot
+# Function to start Telegram bot
 def start_telegram_bot():
-    print("Starting Telegram bot...")
     bot.polling(none_stop=True, interval=0)
-
-# Background task scheduler
-def start_background_tasks():
-    scheduler = BackgroundScheduler()
-    scheduler.add_job(periodic_keep_alive, 'interval', minutes=5)  # Ping every 5 minutes
-    scheduler.start()
 
 # Main entry point
 if __name__ == "__main__":
@@ -155,9 +103,6 @@ if __name__ == "__main__":
     # Start Telegram bot in a separate thread
     telegram_thread = threading.Thread(target=start_telegram_bot, daemon=True)
     telegram_thread.start()
-
-    # Start background tasks for keep-alive
-    start_background_tasks()
 
     # Keep the main thread alive
     try:
