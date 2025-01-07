@@ -72,7 +72,36 @@ def send_welcome(message):
     btn4 = types.KeyboardButton('Feedback')
     markup.add(btn1, btn2, btn3, btn4)
 
-    bot.reply_to(message, "Welcome to EasyGate!", reply_markup=markup)
+    bot.reply_to(message, f"""👋 Hi {message.chat.first_name}! 
+        👋 Welcome to EasyGate!
+Your Gateway to Global Opportunities
+
+🌟 Simplifying Your Path to Success
+From Dreams to Destinations, we’re here to open doors and ensure smooth journeys.
+---
+We are delighted to have you with us!
+
+At EasyGate, we specialize in making your aspirations achievable, whether in education, travel, or career advancement. Here’s how we can support you:
+
+🎓 Scholarship and Admission Assistance
+🛂 Passport and Visa Processing
+🌐 International Career and E-commerce Services
+🏛️ Embassy Appointments and Travel Consultancy
+💻 Online Courses and Proficiency Tests
+
+---
+
+🔹 Registration Period Open!
+You can proceed with registration or explore our range of services.
+
+🔹 Need Assistance?
+
+Type /help for immediate guidance.
+Use /contact to connect with our support team.
+For a detailed guide on using our services, check out /guide.
+Let us simplify the complex and help you reach your goals effortlessly!
+---
+Thank you for choosing EasyGate. Let’s achieve greatness together!""", reply_markup=markup)
 
 @bot.message_handler(func=lambda message: True)
 def handle_options(message):
