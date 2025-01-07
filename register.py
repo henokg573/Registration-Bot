@@ -29,13 +29,13 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
-API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
+API_KEY = "7759515826:AAEjjGhr8pM7WAJBWP8JG1F-wu85nJck338"
 ADMIN_CHAT_ID = "793034140"
 # API_KEY = os.getenv("API_KEY")
 # ADMIN_CHAT_ID  = os.getenv("ADMIN_CHAT_Id"")
 bot = telebot.TeleBot(API_KEY)
 
-
+bot.remove_webhook()
 
     
 
@@ -123,32 +123,6 @@ import telebot
 #         print("Shutting down...")
 
 
-import os
-import telebot
-from flask import Flask, request
-
-API_KEY = os.getenv("API_KEY")
-APP_URL = f'https://easygate-registration-bot-34qv.onrender.com/{API_KEY}'
-
-bot = telebot.TeleBot(API_KEY)
-app = Flask(__name__)
-
-@app.route(f'/{API_KEY}', methods=['POST'])
-def webhook():
-    json_string = request.get_data().decode('utf-8')
-    update = telebot.types.Update.de_json(json_string)
-    bot.process_new_updates([update])
-    return '!', 200
-
-@app.route('/')
-def index():
-    return 'Bot is running!', 200
-
-if __name__ == '__main__':
-    bot.remove_webhook()
-    bot.set_webhook(url=APP_URL)
-    PORT = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=PORT)
 
 
 # Define the bot's handlers
@@ -775,6 +749,7 @@ def payment_markup():
 
 # Start the bot
 bot.polling(none_stop=True)
+
 
 
 
