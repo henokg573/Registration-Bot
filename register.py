@@ -56,157 +56,162 @@ import requests
 from apscheduler.schedulers.background import BackgroundScheduler
 import telebot
 
+# Initialize Flask app and Telegram bot
 app = Flask(__name__)
+bot = TeleBot("YOUR_BOT_API_TOKEN")
 
 @app.route('/health', methods=['GET'])
 def health_check():
     return "OK", 200
 
-# Command to test bot functionality
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
+# Markup for Main Menu
+def main_menu_markup():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     btn1 = types.KeyboardButton('About Us')
     btn2 = types.KeyboardButton('Our Services')
     btn3 = types.KeyboardButton('Continue to Register')
     btn4 = types.KeyboardButton('Feedback')
     markup.add(btn1, btn2, btn3, btn4)
+    return markup
 
-    bot.reply_to(message, f"""👋 Hi {message.chat.first_name}! 
-        👋 Welcome to EasyGate!
-Your Gateway to Global Opportunities
+# Markup for Register Menu
+def register_markup():
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    btn1 = types.KeyboardButton('Google Form')
+    btn2 = types.KeyboardButton('Bot Registration')
+    btn3 = types.KeyboardButton('Directly on Telegram')
+    btn4 = types.KeyboardButton('Main Menu')
+    markup.add(btn1, btn2, btn3, btn4)
+    return markup
 
-🌟 Simplifying Your Path to Success
-From Dreams to Destinations, we’re here to open doors and ensure smooth journeys.
----
-We are delighted to have you with us!
+# Command to test bot functionality
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    markup = main_menu_markup()
+    bot.reply_to(
+        message,
+        f"""👋 Hi {message.chat.first_name}! 
+Welcome to EasyGate, Your Gateway to Global Opportunities 🌟!
 
-At EasyGate, we specialize in making your aspirations achievable, whether in education, travel, or career advancement. Here’s how we can support you:
+From dreams to destinations, we simplify your path to success:
+🎓 Scholarships
+🛂 Visa Processing
+💻 Online Courses
+🏛️ Travel Consultancy
 
-🎓 Scholarship and Admission Assistance
-🛂 Passport and Visa Processing
-🌐 International Career and E-commerce Services
-🏛️ Embassy Appointments and Travel Consultancy
-💻 Online Courses and Proficiency Tests
+🔹 Explore our services or proceed with registration now!
 
----
+Type /help for guidance, or use /contact to reach us.
+Let’s achieve greatness together!""",
+        reply_markup=markup
+    )
 
-🔹 Registration Period Open!
-You can proceed with registration or explore our range of services.
-
-🔹 Need Assistance?
-
-Type /help for immediate guidance.
-Use /contact to connect with our support team.
-For a detailed guide on using our services, check out /guide.
-Let us simplify the complex and help you reach your goals effortlessly!
----
-Thank you for choosing EasyGate. Let’s achieve greatness together!""", reply_markup=markup)
-
+# About Us Handler
 @bot.message_handler(func=lambda message: message.text == "About Us")
 def handle_about_us(message):
     bot.reply_to(
-    message,
-        """Welcome to EasyGate!
+        message,
+        """Welcome to EasyGate! 🎉
 
-We are a team of young Ethiopians currently studying and working across the globe. Our mission is to simplify the process of accessing international education and career opportunities by reducing costs and eliminating the need for expensive intermediaries.
+We are a group of passionate Ethiopians simplifying global opportunities:
+🎓 Affordable scholarships
+🛂 Hassle-free visa assistance
+💼 Career guidance and more!
 
-Our goal is to make services such as visa applications, scholarship opportunities, and career guidance more affordable and easily accessible from the comfort of your home.
-
-At EasyGate, we are dedicated to guiding you through every step of your global journey, whether it's education, work, or travel. Let us help you unlock your future, right from your home!
-
-Stay connected with us on our social media platforms to explore our services further:
-
-- Telegram: @easygate2 or [https://t.me/easygate2](https://t.me/easygate)
-- WhatsApp: 0964255107 or [https://wa.me/0964255107](https://wa.me/0964255107)
+Stay connected:
+- Telegram: @easygate2
+- WhatsApp: 0964255107
 - Email: contact.easygate@gmail.com
+""",
+        reply_markup=main_menu_markup()
+    )
 
-Feel free to contact us via any of the platforms above for more information or to get started!
-    """, reply_markup = main_menu_markup())
-
+# Our Services Handler
 @bot.message_handler(func=lambda message: message.text == "Our Services")
 def handle_our_services(message):
     bot.reply_to(
-    message,
+        message,
         """Our Services:
-    1️⃣ Embassy Interview Assistance
-    2️⃣ Document Review
-    3️⃣ Travel Advice
-    4️⃣ Visa Application Assistance
-    5️⃣ Scholarship Opportunities
-    6️⃣ English Proficiency Test Preparation
-    7️⃣ Passport Services
-    8️⃣ E-Visa Applications
-    9️⃣ International Payments
-    🔟 International Career Opportunities
-    1️⃣1️⃣ Recommend Educational Travel Consultancies
-    1️⃣2️⃣ Assistance with Any Embassy Interview Practice
-    1️⃣3️⃣ Other Services
+1️⃣ Embassy Interview Assistance
+2️⃣ Document Review
+3️⃣ Visa Applications
+4️⃣ Scholarships
+5️⃣ Career Guidance
+6️⃣ International Payments
 
-📞 Contact us to learn more.
-    """, reply_markup = main_menu_markup())
+📞 Contact us for more details.""",
+        reply_markup=main_menu_markup()
+    )
 
+# Continue to Register Handler
 @bot.message_handler(func=lambda message: message.text == "Continue to Register")
 def handle_continue_to_register(message):
     bot.reply_to(
         message,
-            """To register, we offer three ways:
-        1. You can register through our Google Form link.
-        2. You can contact us directly and register.
-        3. You can register through our bot."""
-    
-        , reply_markup = register_markup())
+        """To register, choose one of the options below:
+1️⃣ Register via Google Form
+2️⃣ Directly through Telegram
+3️⃣ Contact us for manual registration.""",
+        reply_markup=register_markup()
+    )
 
-
+# Feedback Handler
 @bot.message_handler(func=lambda message: message.text == "Feedback")
 def handle_feedback(message):
-    bot.reply_to(message, "Please provide your feedback using the blew options")
+    bot.reply_to(message, "Please provide your feedback using the options below.", reply_markup=main_menu_markup())
 
- # Help Command
+# Help Command
 @bot.message_handler(commands=['help'])
-@bot.message_handler(func=lambda message: message.text == "Help")
-def send_guide(message):
+def send_help(message):
     bot.reply_to(
         message,
-        """ To use this service, please type /start.  
+        """Need Help? 🤔
+1️⃣ Type /start to explore our bot.
+2️⃣ Use /guide for a detailed walkthrough.
+3️⃣ Contact us via /contact.
 
-For a guide on how to use the service, please type /guide.  
+Let us assist you!""",
+        reply_markup=main_menu_markup()
+    )
 
-To contact us, please use /contact.  
-""", reply_markup = main_menu_markup()
-    )    
-    # Contact Command
+# Contact Command
 @bot.message_handler(commands=['contact'])
-@bot.message_handler(func=lambda message: message.text == "Contact")
-def send_guide(message):
+def send_contact(message):
     bot.reply_to(
         message,
-        """Contact us via:
-        @easygate2
-        0964255107
-        contact.easygate@gmail.com
-        for help, use this /help
-        to start using this service, use this /start""",reply_markup = main_menu_markup())
+        """Contact EasyGate:
+- Telegram: @easygate2
+- WhatsApp: 0964255107
+- Email: contact.easygate@gmail.com
+
+We’re here to help!""",
+        reply_markup=main_menu_markup()
+    )
+
 # Guide Command
 @bot.message_handler(commands=['guide'])
-@bot.message_handler(func=lambda message: message.text == "Guide")
 def send_guide(message):
     bot.reply_to(
         message,
-        """ Guide to EasyGate registration bot:
-1️⃣ See our services, get to know our bot, contact us and learn more.
-2️⃣ Follow instructions to register.
-3️⃣ Use 'Payment' to handle transactions securely.
+        """EasyGate Guide:
+1️⃣ Learn about our services using the menu.
+2️⃣ Follow instructions for smooth registration.
+3️⃣ Contact us for any assistance.
 
-Explore and simplify your journey with EasyGate! 🌟""", reply_markup = main_menu_markup()
+Simplify your journey with EasyGate! 🌟""",
+        reply_markup=main_menu_markup()
     )
+
 # Function to run Flask app
 def start_flask_app():
     app.run(host="0.0.0.0", port=5000)
 
 # Function to start Telegram bot
 def start_telegram_bot():
-    bot.polling(none_stop=True, interval=0)
+    try:
+        bot.polling(none_stop=True, interval=0)
+    except Exception as e:
+        print(f"Error in Telegram bot: {e}")
 
 # Main entry point
 if __name__ == "__main__":
@@ -765,7 +770,8 @@ def register_markup():
     btn3 = types.KeyboardButton('Directly on Telegram')
     btn4 = types.KeyboardButton('main menu')
     markup.add(btn1, btn2, btn3, btn4)
-    return markup
+    return markup  # Add this return statement
+
 def feedback_markup():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     btn1 = types.KeyboardButton('Google Form feedback')
