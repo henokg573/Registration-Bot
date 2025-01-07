@@ -1,7 +1,7 @@
 from flask import Flask, request
 import telebot
 from telegram import Bot, Update
-from telebot import types
+from telebot import types, TeleBot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import CommandHandler, Updater, CallbackContext, Application
 import os
@@ -58,7 +58,7 @@ import telebot
 
 # Initialize Flask app and Telegram bot
 app = Flask(__name__)
-bot = TeleBot("YOUR_BOT_API_TOKEN")
+bot = TeleBot("API_KEY")
 
 @app.route('/health', methods=['GET'])
 def health_check():
