@@ -29,6 +29,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
+BOT_TOKEN = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
 ADMIN_CHAT_ID = "793034140"
 # API_KEY = os.getenv("API_KEY")
 # ADMIN_CHAT_ID  = os.getenv("ADMIN_CHAT_Id"")
