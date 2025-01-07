@@ -77,7 +77,8 @@ def send_welcome(message):
     btn2 = types.KeyboardButton('Our Services')
     btn3 = types.KeyboardButton('Continue to Register')
     btn4 = types.KeyboardButton('Feedback')
-    markup.add(btn1, btn2, btn3, btn4)
+    btn5 = types.KeyboardButton('Already Registered?')
+    markup.add(btn1, btn2, btn3, btn4,btn5)
 
     bot.reply_to(
         message,f"""👋 Hi {message.chat.first_name}! 
@@ -113,21 +114,7 @@ Thank you for choosing EasyGate. Let’s achieve greatness together!
         """,
         reply_markup=markup,
         )
-    if message.text == "Continue to Register":
-        bot.reply_to(
-                message,
-                """To register, we offer three convenient options:
-                1. You can register through our Google Form link.
-        2. You can contact us directly and register.
-        3. You can register through our bot.
-
-        Please choose one of the options below to continue.""", reply_markup = register_markup())
-    elif message.text == "Feedback":
-        bot.reply_to(
-                message,
-                """We value your feedback! You can send your feedback in one of two ways:
-                1. Directly to our Admin via the bot.
-                2. Submit your feedback using our Google Form link.""" , reply_markup = feedback_markup())
+    
 
 
 
