@@ -74,18 +74,112 @@ def send_welcome(message):
 
     bot.reply_to(message, "Welcome to EasyGate!", reply_markup=markup)
 
-@bot.message_handler(func=lambda message: message.text == "About Us")
-def handle_about_us(message):
-    bot.reply_to(message, "This is about us!")
+@bot.message_handler(func=lambda message: True)
+def handle_options(message):
+    print(f"Message received: {message.text}")  # Debugging
+    service_selected = message.text  # Define service_selected
+    if message.text == 'About Us':
+        bot.reply_to(
+        message,
+        """Welcome to EasyGate!
 
-@bot.message_handler(func=lambda message: message.text == "Our Services")
-def handle_our_services(message):
-    bot.reply_to(message, "These are our services!")
+We are a team of young Ethiopians currently studying and working across the globe. Our mission is to simplify the process of accessing international education and career opportunities by reducing costs and eliminating the need for expensive intermediaries.
+
+Our goal is to make services such as visa applications, scholarship opportunities, and career guidance more affordable and easily accessible from the comfort of your home.
+
+At EasyGate, we are dedicated to guiding you through every step of your global journey, whether it's education, work, or travel. Let us help you unlock your future, right from your home!
+
+Stay connected with us on our social media platforms to explore our services further:
+
+- Telegram: @easygate2 or [https://t.me/easygate2](https://t.me/easygate)
+- WhatsApp: 0964255107 or [https://wa.me/0964255107](https://wa.me/0964255107)
+- Email: contact.easygate@gmail.com
+
+Feel free to contact us via any of the platforms above for more information or to get started!
+    """, reply_markup = main_menu_markup())
+
+@bot.message_handler(func=lambda message: True)
+def handle_options(message):
+    print(f"Message received: {message.text}")  # Debugging
+    service_selected = message.text  # Define service_selected
+    if message.text == 'Our Services':
+        bot.reply_to(
+        message,
+        """Our Services:
+    1️⃣ Embassy Interview Assistance
+    2️⃣ Document Review
+    3️⃣ Travel Advice
+    4️⃣ Visa Application Assistance
+    5️⃣ Scholarship Opportunities
+    6️⃣ English Proficiency Test Preparation
+    7️⃣ Passport Services
+    8️⃣ E-Visa Applications
+    9️⃣ International Payments
+    🔟 International Career Opportunities
+    1️⃣1️⃣ Recommend Educational Travel Consultancies
+    1️⃣2️⃣ Assistance with Any Embassy Interview Practice
+    1️⃣3️⃣ Other Services
+
+📞 Contact us to learn more.
+    """, reply_markup = main_menu_markup())
 
 @bot.message_handler(func=lambda message: message.text == "Continue to Register")
 def handle_continue_to_register(message):
-    bot.reply_to(message, "Let's continue with registration!")
+    print(f"Message received: {message.text}")  # Debugging
+    service_selected = message.text  # Define service_selected  
+    if message.text == "Continue to Register":
+        bot.reply_to(
+            message,
+            """To register, we offer three ways:
+        1. You can register through our Google Form link.
+        2. You can contact us directly and register.
+        3. You can register through our bot."""
+    
+        , reply_markup = register_markup())
 
+
+@bot.message_handler(func=lambda message: message.text == "Feedback")
+def handle_feedback(message):
+    bot.reply_to(message, "Please provide your feedback using the blew options")
+
+ # Help Command
+@bot.message_handler(commands=['help'])
+@bot.message_handler(func=lambda message: message.text == "Help")
+def send_guide(message):
+    bot.reply_to(
+        message,
+        """ To use this service, please type /start.  
+
+For a guide on how to use the service, please type /guide.  
+
+To contact us, please use /contact.  
+""", reply_markup = main_menu_markup()
+    )    
+    # Contact Command
+@bot.message_handler(commands=['contact'])
+@bot.message_handler(func=lambda message: message.text == "Contact")
+def send_guide(message):
+    bot.reply_to(
+        message,
+        """Contact us via:
+        @easygate2
+        0964255107
+        contact.easygate@gmail.com
+        for help, use this /help
+        to start using this service, use this /start""",reply_markup = main_menu_markup())
+# Guide Command
+@bot.message_handler(commands=['guide'])
+@bot.message_handler(func=lambda message: message.text == "Guide")
+def send_guide(message):
+    bot.reply_to(
+        message,
+        """ Guide to EasyGate registration bot:
+1️⃣ See our services, get to know our bot, contact us and learn more.
+2️⃣ Follow instructions to register.
+3️⃣ Use 'Payment' to handle transactions securely.
+
+Explore and simplify your journey with EasyGate! 🌟""", reply_markup = main_menu_markup()
+    )
 # Function to run Flask app
 def start_flask_app():
     app.run(host="0.0.0.0", port=5000)
