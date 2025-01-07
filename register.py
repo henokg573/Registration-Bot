@@ -103,13 +103,10 @@ Let us simplify the complex and help you reach your goals effortlessly!
 ---
 Thank you for choosing EasyGate. Let’s achieve greatness together!""", reply_markup=markup)
 
-@bot.message_handler(func=lambda message: True)
-def handle_options(message):
-    print(f"Message received: {message.text}")  # Debugging
-    service_selected = message.text  # Define service_selected
-    if message.text == 'About Us':
-        bot.reply_to(
-        message,
+@bot.message_handler(func=lambda message: message.text == "About Us")
+def handle_about_us(message):
+    bot.reply_to(
+    message,
         """Welcome to EasyGate!
 
 We are a team of young Ethiopians currently studying and working across the globe. Our mission is to simplify the process of accessing international education and career opportunities by reducing costs and eliminating the need for expensive intermediaries.
@@ -127,13 +124,10 @@ Stay connected with us on our social media platforms to explore our services fur
 Feel free to contact us via any of the platforms above for more information or to get started!
     """, reply_markup = main_menu_markup())
 
-@bot.message_handler(func=lambda message: True)
-def handle_options(message):
-    print(f"Message received: {message.text}")  # Debugging
-    service_selected = message.text  # Define service_selected
-    if message.text == 'Our Services':
-        bot.reply_to(
-        message,
+@bot.message_handler(func=lambda message: message.text == "Our Services")
+def handle_our_services(message):
+    bot.reply_to(
+    message,
         """Our Services:
     1️⃣ Embassy Interview Assistance
     2️⃣ Document Review
@@ -154,11 +148,8 @@ def handle_options(message):
 
 @bot.message_handler(func=lambda message: message.text == "Continue to Register")
 def handle_continue_to_register(message):
-    print(f"Message received: {message.text}")  # Debugging
-    service_selected = message.text  # Define service_selected  
-    if message.text == "Continue to Register":
-        bot.reply_to(
-            message,
+    bot.reply_to(
+        message,
             """To register, we offer three ways:
         1. You can register through our Google Form link.
         2. You can contact us directly and register.
