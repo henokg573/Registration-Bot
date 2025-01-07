@@ -128,12 +128,12 @@ import telebot
 from flask import Flask, request
 
 API_KEY = os.getenv("API_KEY")
-APP_URL = f'https://easygate-registration-bot-34qv.onrender.com/{BOT_TOKEN}'
+APP_URL = f'https://easygate-registration-bot-34qv.onrender.com/{API_KEY}'
 
 bot = telebot.TeleBot(API_KEY)
 app = Flask(__name__)
 
-@app.route(f'/{BOT_TOKEN}', methods=['POST'])
+@app.route(f'/{API_KEY}', methods=['POST'])
 def webhook():
     json_string = request.get_data().decode('utf-8')
     update = telebot.types.Update.de_json(json_string)
