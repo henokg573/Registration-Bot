@@ -58,7 +58,7 @@ import telebot
 
 # Initialize Flask app and Telegram bot
 app = Flask(__name__)
-bot = TeleBot("API_KEY")
+bot = TeleBot("7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0")
 
 @app.route('/health', methods=['GET'])
 def health_check():
