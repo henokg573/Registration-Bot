@@ -1,7 +1,7 @@
 from flask import Flask, request
 import telebot
 from telegram import Bot, Update
-from telebot import types, TeleBot
+from telebot import types
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import CommandHandler, Updater, CallbackContext, Application
 import os
@@ -56,179 +56,70 @@ import requests
 from apscheduler.schedulers.background import BackgroundScheduler
 import telebot
 
-# Initialize Flask app and Telegram bot
-app = Flask(__name__)
-bot = TeleBot("7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0")
+# # Flask app setup
+# app = Flask(__name__)
 
-@app.route('/health', methods=['GET'])
-def health_check():
-    return "OK", 200
+# # Health check route
+# @app.route('/health', methods=['GET'])
+# def health_check():
+#     return "OK", 200
 
-# Markup for Main Menu
-def main_menu_markup():
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    btn1 = types.KeyboardButton('About Us')
-    btn2 = types.KeyboardButton('Our Services')
-    btn3 = types.KeyboardButton('Continue to Register')
-    btn4 = types.KeyboardButton('Feedback')
-    markup.add(btn1, btn2, btn3, btn4)
-    return markup
+# # # Telegram bot setup
+# # API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
+# # ADMIN_CHAT_ID = "793034140"
+# # bot = telebot.TeleBot(API_KEY)
 
-# Markup for Register Menu
-def register_markup():
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    btn1 = types.KeyboardButton('Google Form')
-    btn2 = types.KeyboardButton('Bot Registration')
-    btn3 = types.KeyboardButton('Directly on Telegram')
-    btn4 = types.KeyboardButton('Main Menu')
-    markup.add(btn1, btn2, btn3, btn4)
-    return markup
+# # # Command to test bot functionality
+# # @bot.message_handler(commands=['start'])
+# # def start(message):
+# #     bot.reply_to(message, "Hello! I'm alive and working!")
 
-# Command to test bot functionality
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
-    markup = main_menu_markup()
-    bot.reply_to(
-        message,
-        f"""👋 Hi {message.chat.first_name}! 
-Welcome to EasyGate, Your Gateway to Global Opportunities 🌟!
+# # Function to periodically send a keep-alive ping
+# def periodic_keep_alive():
+#     url = "https://easygate-registration-bot-34qv.onrender.com/health"
+#     try:
+#         response = requests.get(url)
+#         if response.status_code == 200:
+#             print("Keep-alive ping successful!")
+#         else:
+#             print(f"Keep-alive ping failed with status code: {response.status_code}")
+#     except requests.RequestException as e:
+#         print(f"Error in keep-alive ping: {e}")
 
-From dreams to destinations, we simplify your path to success:
-🎓 Scholarships
-🛂 Visa Processing
-💻 Online Courses
-🏛️ Travel Consultancy
+# # Function to start the Flask app
+# def start_flask_app():
+#     app.run(host="0.0.0.0", port=5000)
 
-🔹 Explore our services or proceed with registration now!
+# # Function to start the Telegram bot
+# def start_telegram_bot():
+#     print("Starting Telegram bot...")
+#     bot.polling(none_stop=True, interval=0)
 
-Type /help for guidance, or use /contact to reach us.
-Let’s achieve greatness together!""",
-        reply_markup=markup
-    )
+# # Background task scheduler
+# def start_background_tasks():
+#     scheduler = BackgroundScheduler()
+#     scheduler.add_job(periodic_keep_alive, 'interval', minutes=5)  # Ping every 5 minutes
+#     scheduler.start()
 
-# About Us Handler
-@bot.message_handler(func=lambda message: message.text == "About Us")
-def handle_about_us(message):
-    bot.reply_to(
-        message,
-        """Welcome to EasyGate! 🎉
+# # Main entry point
+# if __name__ == "__main__":
+#     # Start Flask app in a separate thread
+#     flask_thread = threading.Thread(target=start_flask_app, daemon=True)
+#     flask_thread.start()
 
-We are a group of passionate Ethiopians simplifying global opportunities:
-🎓 Affordable scholarships
-🛂 Hassle-free visa assistance
-💼 Career guidance and more!
+#     # Start Telegram bot in a separate thread
+#     telegram_thread = threading.Thread(target=start_telegram_bot, daemon=True)
+#     telegram_thread.start()
 
-Stay connected:
-- Telegram: @easygate2
-- WhatsApp: 0964255107
-- Email: contact.easygate@gmail.com
-""",
-        reply_markup=main_menu_markup()
-    )
+#     # Start background tasks for keep-alive
+#     start_background_tasks()
 
-# Our Services Handler
-@bot.message_handler(func=lambda message: message.text == "Our Services")
-def handle_our_services(message):
-    bot.reply_to(
-        message,
-        """Our Services:
-1️⃣ Embassy Interview Assistance
-2️⃣ Document Review
-3️⃣ Visa Applications
-4️⃣ Scholarships
-5️⃣ Career Guidance
-6️⃣ International Payments
-
-📞 Contact us for more details.""",
-        reply_markup=main_menu_markup()
-    )
-
-# Continue to Register Handler
-@bot.message_handler(func=lambda message: message.text == "Continue to Register")
-def handle_continue_to_register(message):
-    bot.reply_to(
-        message,
-        """To register, choose one of the options below:
-1️⃣ Register via Google Form
-2️⃣ Directly through Telegram
-3️⃣ Contact us for manual registration.""",
-        reply_markup=register_markup()
-    )
-
-# Feedback Handler
-@bot.message_handler(func=lambda message: message.text == "Feedback")
-def handle_feedback(message):
-    bot.reply_to(message, "Please provide your feedback using the options below.", reply_markup=main_menu_markup())
-
-# Help Command
-@bot.message_handler(commands=['help'])
-def send_help(message):
-    bot.reply_to(
-        message,
-        """Need Help? 🤔
-1️⃣ Type /start to explore our bot.
-2️⃣ Use /guide for a detailed walkthrough.
-3️⃣ Contact us via /contact.
-
-Let us assist you!""",
-        reply_markup=main_menu_markup()
-    )
-
-# Contact Command
-@bot.message_handler(commands=['contact'])
-def send_contact(message):
-    bot.reply_to(
-        message,
-        """Contact EasyGate:
-- Telegram: @easygate2
-- WhatsApp: 0964255107
-- Email: contact.easygate@gmail.com
-
-We’re here to help!""",
-        reply_markup=main_menu_markup()
-    )
-
-# Guide Command
-@bot.message_handler(commands=['guide'])
-def send_guide(message):
-    bot.reply_to(
-        message,
-        """EasyGate Guide:
-1️⃣ Learn about our services using the menu.
-2️⃣ Follow instructions for smooth registration.
-3️⃣ Contact us for any assistance.
-
-Simplify your journey with EasyGate! 🌟""",
-        reply_markup=main_menu_markup()
-    )
-
-# Function to run Flask app
-def start_flask_app():
-    app.run(host="0.0.0.0", port=5000)
-
-# Function to start Telegram bot
-def start_telegram_bot():
-    try:
-        bot.polling(none_stop=True, interval=0)
-    except Exception as e:
-        print(f"Error in Telegram bot: {e}")
-
-# Main entry point
-if __name__ == "__main__":
-    # Start Flask app in a separate thread
-    flask_thread = threading.Thread(target=start_flask_app, daemon=True)
-    flask_thread.start()
-
-    # Start Telegram bot in a separate thread
-    telegram_thread = threading.Thread(target=start_telegram_bot, daemon=True)
-    telegram_thread.start()
-
-    # Keep the main thread alive
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        print("Shutting down...")
+#     # Keep the main thread alive
+#     try:
+#         while True:
+#             time.sleep(1)
+#     except KeyboardInterrupt:
+#         print("Shutting down...")
 
 
 
@@ -649,6 +540,70 @@ def collect_email(message):
 
 
 
+# # payment process
+# # Handle the receipt submission and forward to admin
+# @bot.message_handler(content_types=['document', 'photo'])
+# def process_receipt(message):
+#     user_id = message.chat.id
+#     user_first_name = message.chat.first_name
+
+#     if message.document:
+#         file_name = message.document.file_name
+#         file_extension = file_name.split('.')[-1].lower()  # Extract file extension
+        
+#         # Check if the document is a PDF
+#         if file_extension == 'pdf':
+#             receipt_file = message.document.file_id
+#             file_type = 'PDF'
+#             bot.send_document(ADMIN_CHAT_ID, receipt_file)
+#         else:
+#             bot.reply_to(message, "Please send a valid receipt in PDF format.")
+#             return
+
+#     elif message.photo:
+#         receipt_file = message.photo[-1].file_id  # Get the highest quality photo
+#         file_type = 'Photo'
+#         bot.send_photo(ADMIN_CHAT_ID, receipt_file)
+
+#     else:
+#         bot.reply_to(message, "Please send a valid receipt in PDF or image format.")
+#         return
+
+#     # Inform the admin about the receipt submission
+#     pending_verifications[user_id] = {'file_id': receipt_file, 'file_type': file_type, 'user_name': user_first_name}
+#     bot.reply_to(message, "Your payment receipt has been sent for verification. The admin will confirm your payment shortly.")
+#     bot.send_message(ADMIN_CHAT_ID, f"📩 New Payment Receipt from {user_first_name} ({user_id}):")
+
+#     # Send Inline buttons to Admin for verification
+#     markup = InlineKeyboardMarkup()
+#     verify_button = InlineKeyboardButton("✅ Verify User", callback_data=f"verify_{user_id}")
+#     invalid_button = InlineKeyboardButton("❌ Invalid Payment", callback_data=f"invalid_{user_id}")
+#     markup.add(verify_button, invalid_button)
+#     bot.send_message(ADMIN_CHAT_ID, "Please verify the payment from the user:", reply_markup=markup)
+
+
+# # Handle admin verification actions
+# @bot.callback_query_handler(func=lambda call: call.data.startswith('verify_') or call.data.startswith('invalid_'))
+# def handle_admin_response(call):
+#     user_id = int(call.data.split('_')[1])
+
+#     if call.data.startswith('verify_'):
+#         if user_id in pending_verifications:
+#             user_data[user_id] = pending_verifications.pop(user_id)
+#             bot.send_message(user_id, "✅ Your payment has been verified! Please proceed to select your service. this is our channel, please join us [channel](https://t.me/easygate)", reply_markup=main_menu_markup())
+#         else:
+#             bot.send_message(ADMIN_CHAT_ID, "The user ID is not in the pending verifications.")
+
+#     elif call.data.startswith('invalid_'):
+#         if user_id in pending_verifications:
+#             pending_verifications.pop(user_id)
+#             bot.send_message(user_id, "❌ Your payment could not be verified. Please contact support.")
+#             bot.send_message(ADMIN_CHAT_ID, f"Payment invalid for {user_id}. User has been notified.")
+#         else:
+#             bot.send_message(ADMIN_CHAT_ID, "The user ID is not in the pending verifications.")
+
+#     bot.answer_callback_query(call.id)  # Close the callback button
+
 
 def handle_service_selection(message):
     user_id = message.chat.id
@@ -770,8 +725,7 @@ def register_markup():
     btn3 = types.KeyboardButton('Directly on Telegram')
     btn4 = types.KeyboardButton('main menu')
     markup.add(btn1, btn2, btn3, btn4)
-    return markup  # Add this return statement
-
+    return markup
 def feedback_markup():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     btn1 = types.KeyboardButton('Google Form feedback')
@@ -793,12 +747,16 @@ def payment_markup():
     return markup
 
 
+# Start the bot
+bot.polling(none_stop=True)
 
-# Start the bot by calling the function
-if __name__ == "__main__":
-    start_telegram_bot()
 
-bot.remove_webhook()
+
+
+# # def start_telegram_bot():
 # if __name__ == "__main__":
-#     bot.remove_webhook()  # Clear previous webhooks
-#     bot.set_webhook(url="https://easygate-registration-bot-34qv.onrender.com/telegram_webhook")  # Set the webhook URL
+#     # Start the dummy server in a separate thread
+#     threading.Thread(target=start_dummy_server, daemon=True).start()
+
+#     # Start the Telegram bot
+#     start_telegram_bot()
