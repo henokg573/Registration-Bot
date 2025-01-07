@@ -29,11 +29,11 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
-BOT_TOKEN = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
+API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
 ADMIN_CHAT_ID = "793034140"
 # API_KEY = os.getenv("API_KEY")
 # ADMIN_CHAT_ID  = os.getenv("ADMIN_CHAT_Id"")
-bot = telebot.TeleBot(BOT_TOKEN)
+bot = telebot.TeleBot(API_KEY)
 
 
 
@@ -127,10 +127,10 @@ import os
 import telebot
 from flask import Flask, request
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+API_KEY = os.getenv("API_KEY")
 APP_URL = f'https://easygate-registration-bot-34qv.onrender.com/{BOT_TOKEN}'
 
-bot = telebot.TeleBot(BOT_TOKEN)
+bot = telebot.TeleBot(API_KEY)
 app = Flask(__name__)
 
 @app.route(f'/{BOT_TOKEN}', methods=['POST'])
