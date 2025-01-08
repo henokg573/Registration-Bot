@@ -49,35 +49,30 @@ from flask import Flask, request
 
 
 
+
 # API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
 API_KEY = "7759515826:AAEjjGhr8pM7WAJBWP8JG1F-wu85nJck338"
 ADMIN_CHAT_ID = "793034140"
-# API_KEY = os.getenv("API_KEY")
-# ADMIN_CHAT_ID  = os.getenv("ADMIN_CHAT_Id"")
+APP_URL = f'https://easygate-registration-bot-34qv.onrender.com/{API_KEY}'
 bot = telebot.TeleBot(API_KEY)
+
+bot.remove_webhook()
+bot.set_webhook(url=APP_URL)
+
 app = Flask(__name__)
 
 @app.route('/')
 def home():
     return "Telegram Bot is running!"
 
-@app.route('/webhook', methods=['POST'])
+@app.route(f'/{API_KEY}', methods=['POST'])
 def webhook():
-    update = request.get_json()
-    if update and 'message' in update:
-        chat_id = update['message']['chat']['id']
-        text = update['message'].get('text', '')
-        reply_text = f"You said: {text}"
-        send_message(chat_id, reply_text)
+    json_string = request.get_data().decode('utf-8')
+    update = telebot.types.Update.de_json(json_string)
+    bot.process_new_updates([update])
     return "OK", 200
 
-def send_message(chat_id, text):
-    url = f"https://api.telegram.org/bot{API_KEY}/sendMessage"
-    payload = {'chat_id': chat_id, 'text': text}
-    requests.post(url, json=payload)
-
 if __name__ == "__main__":
-    # Use Render's dynamically assigned port or default to 5000 for local testing
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
 
@@ -773,7 +768,7 @@ def payment_markup():
 
 
 # Start the bot
-# bot.polling(none_stop=True) # i am using webhook so i commented this
+bot.polling(none_stop=True) # i am using webhook so i commented this
 
 
 
