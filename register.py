@@ -1,50 +1,10 @@
-from flask import Flask, request
-import telebot
-from telegram import Bot, Update
-from telebot import types
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-from telegram.ext import CommandHandler, Updater, CallbackContext, Application
 import os
-# from telegram.ext import Dispatcher
-from telebot.types import ForceReply
-import telegram
-from telebot import types
-# import os
-import time
-
-import email
 from flask import Flask, request
 import telebot
-from telegram import Bot
-from telegram import Update
-from telebot import types
-from telebot import types
-from telegram.ext import CommandHandler, Updater, CallbackContext, Application
-import os
-# from telegram.ext import Dispatcher
-from telebot.types import ForceReply
-import telegram
-from telebot import types
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-import telebot
-import threading
-import requests
-import socket
-import time
-from datetime import datetime
-from flask import Flask
+import logging
 from apscheduler.schedulers.background import BackgroundScheduler
-import http.server
-import socketserver
-
-from flask import Flask
-import time
-import threading
 import requests
-from apscheduler.schedulers.background import BackgroundScheduler
-import telebot
-from flask import Flask, request
+import threading
 
 
 
@@ -60,7 +20,9 @@ bot.remove_webhook()
 bot.set_webhook(url=APP_URL)
 
 app = Flask(__name__)
-
+# Set up logging for debugging
+logging.basicConfig(level=logging.INFO)
+# Health check route
 @app.route('/')
 def home():
     return "Telegram Bot is running!"
@@ -72,10 +34,65 @@ def webhook():
     bot.process_new_updates([update])
     return "OK", 200
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+def start_flask_app():
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
 
+def start_telegram_bot():
+    bot.remove_webhook()
+    bot.set_webhook(url=APP_URL)
+
+    logging.info("Starting Telegram bot...")
+    bot.polling(none_stop=True)
+
+# Function to periodically send a keep-alive ping
+def periodic_keep_alive():
+    url = "https://your-app-url.onrender.com/health"
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            logging.info("Keep-alive ping successful!")
+        else:
+            logging.warning(f"Keep-alive ping failed with status code: {response.status_code}")
+    except requests.RequestException as e:
+        logging.error(f"Error in keep-alive ping: {e}")
+
+# Start background tasks
+def start_background_tasks():
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(periodic_keep_alive, 'interval', minutes=5)  # Ping every 5 minutes
+    scheduler.start()
+
+# Main entry point
+if __name__ == "__main__":
+    # Start Flask app in a separate thread
+    flask_thread = threading.Thread(target=start_flask_app, daemon=True)
+    flask_thread.start()
+
+    # Start Telegram bot in a separate thread
+    telegram_thread = threading.Thread(target=start_telegram_bot, daemon=True)
+    telegram_thread.start()
+
+    # Start background tasks for keep-alive
+    start_background_tasks()
+
+    # Keep the main thread alive
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        logging.info("Shutting down...")
+
+# Telegram bot handlers
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    btn1 = telebot.types.KeyboardButton('About Us')
+    btn2 = telebot.types.KeyboardButton('Our Services')
+    btn3 = telebot.types.KeyboardButton('Continue to Register')
+    btn4 = telebot.types.KeyboardButton('Feedback')
+    markup.add(btn1, btn2, btn3, btn4)
+
+    bot.reply_to(message, "👋 Hi there! Welcome to EasyGate!", reply_markup=markup)
 
 # # Flask app setup
 # app = Flask(__name__)
