@@ -46,7 +46,7 @@ def start_telegram_bot():
 
 # Function to periodically send a keep-alive ping
 def periodic_keep_alive():
-    url = "https://your-app-url.onrender.com/health"
+    url = "https://easygate-registration-bot-34qv.onrender.com/health"
     try:
         response = requests.get(url)
         if response.status_code == 200:
