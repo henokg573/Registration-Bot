@@ -57,7 +57,10 @@ ADMIN_CHAT_ID = "793034140"
 bot = telebot.TeleBot(API_KEY)
 app = Flask(__name__)
 
-# Endpoint to handle webhook updates
+@app.route('/')
+def home():
+    return "Telegram Bot is running!"
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
     update = request.get_json()
@@ -68,17 +71,15 @@ def webhook():
         send_message(chat_id, reply_text)
     return "OK", 200
 
-# Function to send a message to a user
 def send_message(chat_id, text):
-    url = f"https://api.telegram.org/bot7759515826:AAEjjGhr8pM7WAJBWP8JG1F-wu85nJck338/sendMessage"
+    url = f"https://api.telegram.org/bot{API_KEY}/sendMessage"
     payload = {'chat_id': chat_id, 'text': text}
     requests.post(url, json=payload)
 
-# Run the app
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Get port from environment variable
+    # Use Render's dynamically assigned port or default to 5000 for local testing
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-
 
 
 # # Flask app setup
