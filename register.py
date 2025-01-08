@@ -57,49 +57,26 @@ ADMIN_CHAT_ID = "793034140"
 bot = telebot.TeleBot(API_KEY)
 app = Flask(__name__)
 
+# Endpoint to handle webhook updates
 @app.route('/webhook', methods=['POST'])
 def webhook():
     update = request.get_json()
-    print(update)  # Log the incoming update for debugging
-    return "OK", 200  # Respond with HTTP 200 status
-
-if __name__ == "__main__":
-    app.run(port=5000)
-
-
-
-import requests
-
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    update = request.get_json()
-    if 'message' in update:
+    if update and 'message' in update:
         chat_id = update['message']['chat']['id']
         text = update['message'].get('text', '')
         reply_text = f"You said: {text}"
         send_message(chat_id, reply_text)
     return "OK", 200
 
+# Function to send a message to a user
 def send_message(chat_id, text):
     url = f"https://api.telegram.org/bot7759515826:AAEjjGhr8pM7WAJBWP8JG1F-wu85nJck338/sendMessage"
     payload = {'chat_id': chat_id, 'text': text}
     requests.post(url, json=payload)
 
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    try:
-        update = request.get_json()
-        # Process the update
-    except Exception as e:
-        print(f"Error: {e}")
-        return "Error", 400
-    return "OK", 200
-
-
-import os
-
+# Run the app
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 5000))  # Get port from environment variable
     app.run(host="0.0.0.0", port=port)
 
 
