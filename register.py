@@ -795,7 +795,7 @@ def payment_markup():
 
 
 # Start the bot
-bot.polling(none_stop=True)
+# bot.polling(none_stop=True) # i am using webhook so i commented this
 
 
 
