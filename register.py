@@ -27,18 +27,6 @@ import telegram
 from telebot import types
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-
-# API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
-API_KEY = "7759515826:AAEjjGhr8pM7WAJBWP8JG1F-wu85nJck338"
-ADMIN_CHAT_ID = "793034140"
-# API_KEY = os.getenv("API_KEY")
-# ADMIN_CHAT_ID  = os.getenv("ADMIN_CHAT_Id"")
-bot = telebot.TeleBot(API_KEY)
-
-bot.remove_webhook()
-
-    
-
 import telebot
 import threading
 import requests
@@ -56,6 +44,65 @@ import threading
 import requests
 from apscheduler.schedulers.background import BackgroundScheduler
 import telebot
+from flask import Flask, request
+
+
+
+
+# API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
+API_KEY = "7759515826:AAEjjGhr8pM7WAJBWP8JG1F-wu85nJck338"
+ADMIN_CHAT_ID = "793034140"
+# API_KEY = os.getenv("API_KEY")
+# ADMIN_CHAT_ID  = os.getenv("ADMIN_CHAT_Id"")
+bot = telebot.TeleBot(API_KEY)
+app = Flask(__name__)
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    update = request.get_json()
+    print(update)  # Log the incoming update for debugging
+    return "OK", 200  # Respond with HTTP 200 status
+
+if __name__ == "__main__":
+    app.run(port=5000)
+
+
+
+import requests
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    update = request.get_json()
+    if 'message' in update:
+        chat_id = update['message']['chat']['id']
+        text = update['message'].get('text', '')
+        reply_text = f"You said: {text}"
+        send_message(chat_id, reply_text)
+    return "OK", 200
+
+def send_message(chat_id, text):
+    url = f"https://api.telegram.org/bot7759515826:AAEjjGhr8pM7WAJBWP8JG1F-wu85nJck338/sendMessage"
+    payload = {'chat_id': chat_id, 'text': text}
+    requests.post(url, json=payload)
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    try:
+        update = request.get_json()
+        # Process the update
+    except Exception as e:
+        print(f"Error: {e}")
+        return "Error", 400
+    return "OK", 200
+
+
+import os
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
+
+
 
 # # Flask app setup
 # app = Flask(__name__)
