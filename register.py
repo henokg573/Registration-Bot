@@ -92,71 +92,108 @@ def send_welcome(message):
     markup.add(btn1, btn2, btn3, btn4)
 
     bot.reply_to(message, "👋 Hi there! Welcome to EasyGate!", reply_markup=markup)
+    if message.text == "Continue to Register":
+        bot.reply_to(
+        message,
+            """To register, we offer three ways:
 
-# # Flask app setup
-# app = Flask(__name__)
+        1. You can register through our Google Form link.
+        2. You can contact us directly and register.
+        3. You can register through our bot.
 
-# # Health check route
-# @app.route('/health', methods=['GET'])
-# def health_check():
-#     return "OK", 200
+        Please choose one of the options below to continue.""", reply_markup = register_markup())
+    elif message.text == "Feedback":
+        bot.reply_to(
+        message,
+            """We value your feedback! You can send your feedback in one of two ways:
+            1. Using our Google Form link.
+            2. Directly to our Admin via the bot.
+            """ , reply_markup = feedback_markup())
+    elif message.text == "Already Registered?":
+        bot.reply_to(
+        message,
+            """If you have already registered, please continue to the payment method""", reply_markup = payment_markup())
+    elif message.text == "Google Form":
+        markup = telebot.types.InlineKeyboardMarkup()
+        form_button = telebot.types.InlineKeyboardButton("Click here to fill out the Google Form", url="https://forms.gle/pwapv5YrnVn81KWa6")
+        markup.add(form_button)
+    
+        bot.reply_to(
+        message,
+        "Please use the button below to access the registration form.",
+        reply_markup=markup
+    )
+    elif message.text == "Directly on Telegram":
+        bot.reply_to(
+            message,
+                """Please use this username
+                @easygate2 or 0964255107 to register""", reply_markup = register_markup())
+    elif message.text == "Bot Registration":
+        start_registration(message)
+    elif message.text == "Google Form feedback":
+        markup = telebot.types.InlineKeyboardMarkup()
+        form_button = telebot.types.InlineKeyboardButton("Click here to fill out the Google Form", url="https://forms.gle/RqPgyEHv5iSuQVav7")
+        markup.add(form_button)
+    
+        bot.reply_to(
+        message,
+        "Please use the button below to access the registration form.",
+        reply_markup=markup
+    )
+    elif message.text == "Directly to Admin":
+        bot.reply_to(
+            message,
+                """Please send your feedback directly to the admin.""", reply_markup = feedback_markup())
+    elif message.text == "Bank Transfer":
+        bot.reply_to(
+            message,
+                """Please transfer the payment to the following bank account:
+                Bank Name: CBE
+                Account Number: 1000000000000
+                Account Name: EasyGate
+                Please provide the receipt after payment.""", reply_markup = payment_markup())
+    elif message.text == "Telebirr":
+        bot.reply_to(
+            message,
+                """Please transfer the payment to the following Telebirr account:
+                Telebirr Number: 0964255107
+                Account Name: EasyGate
+                Please provide the receipt after payment.""", reply_markup = payment_markup())
+    elif message.text == "PayPal":
+        bot.reply_to(
+            message,
+                """Please transfer the payment to the following PayPal account:
+                PayPal Email: contact.easygate@gmail.com
+                Please provide the receipt after payment.""", reply_markup = payment_markup())
+    elif message.text == "Already Paid? (Submit receipt)":
+        bot.reply_to(
+            message,
+                """Please submit the receipt after payment.""", reply_markup = payment_markup())
+    elif message.text == "Choose Different Payment Method":
+        bot.reply_to(
+            message,
+                """Please choose a different payment method.""", reply_markup = payment_markup())
+    elif message.text == "main menu":
+        bot.reply_to(
+            message,
+                """
+Welcome back to EasyGate!""", reply_markup = main_menu_markup())
+    elif message.text == "About Us":
+        bot.reply_to(
+            message,
+            """Welcome to EasyGate!
+            """, reply_markup = main_menu_markup())
+    elif message.text == "Our Services":
+        bot.reply_to(
+            message,
+            """Our Services:
+            """, reply_markup = main_menu_markup())
+    else:
+        bot.reply_to(
+                message,
+                "I don't understand that command. Please use the help command."
+            )
 
-# # # Telegram bot setup
-# # API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
-# # ADMIN_CHAT_ID = "793034140"
-# # bot = telebot.TeleBot(API_KEY)
-
-# # # Command to test bot functionality
-# # @bot.message_handler(commands=['start'])
-# # def start(message):
-# #     bot.reply_to(message, "Hello! I'm alive and working!")
-
-# # Function to periodically send a keep-alive ping
-# def periodic_keep_alive():
-#     url = "https://easygate-registration-bot-34qv.onrender.com/health"
-#     try:
-#         response = requests.get(url)
-#         if response.status_code == 200:
-#             print("Keep-alive ping successful!")
-#         else:
-#             print(f"Keep-alive ping failed with status code: {response.status_code}")
-#     except requests.RequestException as e:
-#         print(f"Error in keep-alive ping: {e}")
-
-# # Function to start the Flask app
-# def start_flask_app():
-#     app.run(host="0.0.0.0", port=5000)
-
-# # Function to start the Telegram bot
-# def start_telegram_bot():
-#     print("Starting Telegram bot...")
-#     bot.polling(none_stop=True, interval=0)
-
-# # Background task scheduler
-# def start_background_tasks():
-#     scheduler = BackgroundScheduler()
-#     scheduler.add_job(periodic_keep_alive, 'interval', minutes=5)  # Ping every 5 minutes
-#     scheduler.start()
-
-# # Main entry point
-# if __name__ == "__main__":
-#     # Start Flask app in a separate thread
-#     flask_thread = threading.Thread(target=start_flask_app, daemon=True)
-#     flask_thread.start()
-
-#     # Start Telegram bot in a separate thread
-#     telegram_thread = threading.Thread(target=start_telegram_bot, daemon=True)
-#     telegram_thread.start()
-
-#     # Start background tasks for keep-alive
-#     start_background_tasks()
-
-#     # Keep the main thread alive
-#     try:
-#         while True:
-#             time.sleep(1)
-#     except KeyboardInterrupt:
-#         print("Shutting down...")
 
 
 
@@ -166,11 +203,11 @@ def send_welcome(message):
 def send_welcome(message):
     print(f"Received /start from {message.chat.id}")  # Debugging
 
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    btn1 = types.KeyboardButton('About Us')
-    btn2 = types.KeyboardButton('Our Services')
-    btn3 = types.KeyboardButton('Continue to Register')
-    btn4 = types.KeyboardButton('Feedback')
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    btn1 = telebot.types.KeyboardButton('About Us')
+    btn2 = telebot.types.KeyboardButton('Our Services')
+    btn3 = telebot.types.KeyboardButton('Continue to Register')
+    btn4 = telebot.types.KeyboardButton('Feedback')
     markup.add(btn1, btn2, btn3, btn4)
 
     bot.reply_to(
@@ -701,9 +738,9 @@ def process_receipt(message):
     bot.send_message(ADMIN_CHAT_ID, f"📩 New Payment Receipt from {user_first_name} ({user_id}):")
 
     # Add admin verification buttons
-    markup = InlineKeyboardMarkup()
-    verify_button = InlineKeyboardButton("✅ Verify User", callback_data=f"verify_{user_id}")
-    invalid_button = InlineKeyboardButton("❌ Invalid Payment", callback_data=f"invalid_{user_id}")
+    markup = telebot.types.InlineKeyboardMarkup()
+    verify_button = telebot.types.InlineKeyboardButton("✅ Verify User", callback_data=f"verify_{user_id}")
+    invalid_button = telebot.types.InlineKeyboardButton("❌ Invalid Payment", callback_data=f"invalid_{user_id}")
     markup.add(verify_button, invalid_button)
     bot.send_message(ADMIN_CHAT_ID, "Please verify the payment from the user:", reply_markup=markup)
 
@@ -723,8 +760,8 @@ def handle_admin_response(call):
         bot.send_message(user_id, "✅ Your payment has been verified! Please join our Telegram channel using the link below:")
         
          # Create an inline keyboard with the channel link
-        markup = types.InlineKeyboardMarkup()
-        button = types.InlineKeyboardButton("Join our Telegram channel", url="https://t.me/easygate")
+        markup = telebot.types.InlineKeyboardMarkup()
+        button = telebot.types.InlineKeyboardButton("Join our Telegram channel", url="https://t.me/easygate")
         markup.add(button)
 
         # Send Telegram channel link
@@ -746,39 +783,39 @@ def handle_admin_response(call):
 
 
 def main_menu_markup():
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    btn1 = types.KeyboardButton('About Us')
-    btn2 = types.KeyboardButton('Our Services')
-    btn3 = types.KeyboardButton('Continue to Register')
-    btn4 = types.KeyboardButton('Feedback')
-    btn5 = types.KeyboardButton('Already Registered?')
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    btn1 = telebot.types.KeyboardButton('About Us')
+    btn2 = telebot.types.KeyboardButton('Our Services')
+    btn3 = telebot.types.KeyboardButton('Continue to Register')
+    btn4 = telebot.types.KeyboardButton('Feedback')
+    btn5 = telebot.types.KeyboardButton('Already Registered?')
     markup.add(btn1, btn2, btn3, btn4, btn5)
     return markup
 def register_markup():
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    btn1 = types.KeyboardButton('Google Form')
-    btn2 = types.KeyboardButton('Bot Registration')
-    btn3 = types.KeyboardButton('Directly on Telegram')
-    btn4 = types.KeyboardButton('main menu')
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    btn1 = telebot.types.KeyboardButton('Google Form')
+    btn2 = telebot.types.KeyboardButton('Bot Registration')
+    btn3 = telebot.types.KeyboardButton('Directly on Telegram')
+    btn4 = telebot.types.KeyboardButton('main menu')
     markup.add(btn1, btn2, btn3, btn4)
     return markup
 def feedback_markup():
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    btn1 = types.KeyboardButton('Google Form feedback')
-    btn2 = types.KeyboardButton('Directly to Admin')
-    btn3 = types.KeyboardButton('main menu')
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    btn1 = telebot.types.KeyboardButton('Google Form feedback')
+    btn2 = telebot.types.KeyboardButton('Directly to Admin')
+    btn3 = telebot.types.KeyboardButton('main menu')
     markup.add(btn1, btn2, btn3)
     return markup
 def payment_markup():
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    btn1 = types.KeyboardButton('Bank Transfer')
-    btn2 = types.KeyboardButton('Telebirr')
-    btn3 = types.KeyboardButton('PayPal')
-    btn4 = types.KeyboardButton('Already Paid? (Submit receipt)')
-    btn5 = types.KeyboardButton('Choose Different Payment Method')
-    btn6 = types.KeyboardButton('main menu')
-    btn7 = types.KeyboardButton('Feedback')
-    btn8 = types.KeyboardButton('back')
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    btn1 = telebot.types.KeyboardButton('Bank Transfer')
+    btn2 = telebot.types.KeyboardButton('Telebirr')
+    btn3 = telebot.types.KeyboardButton('PayPal')
+    btn4 = telebot.types.KeyboardButton('Already Paid? (Submit receipt)')
+    btn5 = telebot.types.KeyboardButton('Choose Different Payment Method')
+    btn6 = telebot.types.KeyboardButton('main menu')
+    btn7 = telebot.types.KeyboardButton('Feedback')
+    btn8 = telebot.types.KeyboardButton('back')
     markup.add(btn1, btn2, btn3, btn4, btn5,btn6, btn7, btn8)
     return markup
 
