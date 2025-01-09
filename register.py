@@ -10,7 +10,7 @@ from flask import Flask, request
 import requests
 from apscheduler.schedulers.background import BackgroundScheduler
 # API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
-API_KEY = "7759515826:AAEjjGhr8pM7WAJBWP8JG1F-wu85nJck338"
+API_KEY = "7929155173:AAEpswd4oLpvy6P4YaZszPeyFRIn8KteUh8"
 ADMIN_CHAT_ID = "793034140"
 APP_URL = f'https://easygate-registration-bot-34qv.onrender.com/{API_KEY}'
 bot = telebot.TeleBot(API_KEY)
@@ -54,10 +54,38 @@ def periodic_keep_alive():
             logging.warning(f"Keep-alive ping failed with status code: {response.status_code}")
     except requests.RequestException as e:
         logging.error(f"Error in keep-alive ping: {e}")
+
+
+import time
+from telebot.apihelper import ApiTelegramException
+
+def set_webhook_with_retry(bot, url):
+    while True:
+        try:
+            bot.set_webhook(url=url)
+            print("Webhook set successfully!")
+            break  # Exit the loop if the webhook is set successfully
+        except ApiTelegramException as e:
+            if e.error_code == 429:  # Rate limit exceeded
+                retry_after = int(e.result_json['parameters']['retry_after'])
+                print(f"Rate limit exceeded. Retrying after {retry_after} seconds...")
+                time.sleep(retry_after)
+            else:
+                print(f"Failed to set webhook: {e}")
+                break  # Exit if it's a different error
+
+# Use the function
+set_webhook_with_retry(bot, APP_URL)
+
+
+
 import time
 try:
     bot.set_webhook(url=APP_URL)
-except telebot.apihelper.Api
+except telebot.apihelper.ApiTelegramException as e:
+    # Handle the exception (e.g., log the error or retry)
+    print(f"Failed to set webhook: {e}")
+
 
 # Start background tasks
 def start_background_tasks():
