@@ -54,6 +54,10 @@ def periodic_keep_alive():
             logging.warning(f"Keep-alive ping failed with status code: {response.status_code}")
     except requests.RequestException as e:
         logging.error(f"Error in keep-alive ping: {e}")
+import time
+try:
+    bot.set_webhook(url=APP_URL)
+except telebot.apihelper.Api
 
 # Start background tasks
 def start_background_tasks():
@@ -821,7 +825,7 @@ def payment_markup():
 
 
 # Start the bot
-bot.polling(none_stop=True) # i am using webhook so i commented this
+# bot.polling(none_stop=True) # i am using webhook so i commented this
 
 
 
