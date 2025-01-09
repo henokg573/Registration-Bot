@@ -81,118 +81,118 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         logging.info("Shutting down...")
 
-# Telegram bot handlers
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
-    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    btn1 = telebot.types.KeyboardButton('About Us')
-    btn2 = telebot.types.KeyboardButton('Our Services')
-    btn3 = telebot.types.KeyboardButton('Continue to Register')
-    btn4 = telebot.types.KeyboardButton('Feedback')
-    markup.add(btn1, btn2, btn3, btn4)
+# # Telegram bot handlers
+# @bot.message_handler(commands=['start'])
+# def send_welcome(message):
+#     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+#     btn1 = telebot.types.KeyboardButton('About Us')
+#     btn2 = telebot.types.KeyboardButton('Our Services')
+#     btn3 = telebot.types.KeyboardButton('Continue to Register')
+#     btn4 = telebot.types.KeyboardButton('Feedback')
+#     markup.add(btn1, btn2, btn3, btn4)
 
-    bot.reply_to(message, "👋 Hi there! Welcome to EasyGate!", reply_markup=markup)
-    if message.text == "Continue to Register":
-        bot.reply_to(
-        message,
-            """To register, we offer three ways:
+#     bot.reply_to(message, "👋 Hi there! Welcome to EasyGate!", reply_markup=markup)
+#     if message.text == "Continue to Register":
+#         bot.reply_to(
+#         message,
+#             """To register, we offer three ways:
 
-        1. You can register through our Google Form link.
-        2. You can contact us directly and register.
-        3. You can register through our bot.
+#         1. You can register through our Google Form link.
+#         2. You can contact us directly and register.
+#         3. You can register through our bot.
 
-        Please choose one of the options below to continue.""", reply_markup = register_markup())
-    elif message.text == "Feedback":
-        bot.reply_to(
-        message,
-            """We value your feedback! You can send your feedback in one of two ways:
-            1. Using our Google Form link.
-            2. Directly to our Admin via the bot.
-            """ , reply_markup = feedback_markup())
-    elif message.text == "Already Registered?":
-        bot.reply_to(
-        message,
-            """If you have already registered, please continue to the payment method""", reply_markup = payment_markup())
-    elif message.text == "Google Form":
-        markup = telebot.types.InlineKeyboardMarkup()
-        form_button = telebot.types.InlineKeyboardButton("Click here to fill out the Google Form", url="https://forms.gle/pwapv5YrnVn81KWa6")
-        markup.add(form_button)
+#         Please choose one of the options below to continue.""", reply_markup = register_markup())
+#     elif message.text == "Feedback":
+#         bot.reply_to(
+#         message,
+#             """We value your feedback! You can send your feedback in one of two ways:
+#             1. Using our Google Form link.
+#             2. Directly to our Admin via the bot.
+#             """ , reply_markup = feedback_markup())
+#     elif message.text == "Already Registered?":
+#         bot.reply_to(
+#         message,
+#             """If you have already registered, please continue to the payment method""", reply_markup = payment_markup())
+#     elif message.text == "Google Form":
+#         markup = telebot.types.InlineKeyboardMarkup()
+#         form_button = telebot.types.InlineKeyboardButton("Click here to fill out the Google Form", url="https://forms.gle/pwapv5YrnVn81KWa6")
+#         markup.add(form_button)
     
-        bot.reply_to(
-        message,
-        "Please use the button below to access the registration form.",
-        reply_markup=markup
-    )
-    elif message.text == "Directly on Telegram":
-        bot.reply_to(
-            message,
-                """Please use this username
-                @easygate2 or 0964255107 to register""", reply_markup = register_markup())
-    elif message.text == "Bot Registration":
-        start_registration(message)
-    elif message.text == "Google Form feedback":
-        markup = telebot.types.InlineKeyboardMarkup()
-        form_button = telebot.types.InlineKeyboardButton("Click here to fill out the Google Form", url="https://forms.gle/RqPgyEHv5iSuQVav7")
-        markup.add(form_button)
+#         bot.reply_to(
+#         message,
+#         "Please use the button below to access the registration form.",
+#         reply_markup=markup
+#     )
+#     elif message.text == "Directly on Telegram":
+#         bot.reply_to(
+#             message,
+#                 """Please use this username
+#                 @easygate2 or 0964255107 to register""", reply_markup = register_markup())
+#     elif message.text == "Bot Registration":
+#         start_registration(message)
+#     elif message.text == "Google Form feedback":
+#         markup = telebot.types.InlineKeyboardMarkup()
+#         form_button = telebot.types.InlineKeyboardButton("Click here to fill out the Google Form", url="https://forms.gle/RqPgyEHv5iSuQVav7")
+#         markup.add(form_button)
     
-        bot.reply_to(
-        message,
-        "Please use the button below to access the registration form.",
-        reply_markup=markup
-    )
-    elif message.text == "Directly to Admin":
-        bot.reply_to(
-            message,
-                """Please send your feedback directly to the admin.""", reply_markup = feedback_markup())
-    elif message.text == "Bank Transfer":
-        bot.reply_to(
-            message,
-                """Please transfer the payment to the following bank account:
-                Bank Name: CBE
-                Account Number: 1000000000000
-                Account Name: EasyGate
-                Please provide the receipt after payment.""", reply_markup = payment_markup())
-    elif message.text == "Telebirr":
-        bot.reply_to(
-            message,
-                """Please transfer the payment to the following Telebirr account:
-                Telebirr Number: 0964255107
-                Account Name: EasyGate
-                Please provide the receipt after payment.""", reply_markup = payment_markup())
-    elif message.text == "PayPal":
-        bot.reply_to(
-            message,
-                """Please transfer the payment to the following PayPal account:
-                PayPal Email: contact.easygate@gmail.com
-                Please provide the receipt after payment.""", reply_markup = payment_markup())
-    elif message.text == "Already Paid? (Submit receipt)":
-        bot.reply_to(
-            message,
-                """Please submit the receipt after payment.""", reply_markup = payment_markup())
-    elif message.text == "Choose Different Payment Method":
-        bot.reply_to(
-            message,
-                """Please choose a different payment method.""", reply_markup = payment_markup())
-    elif message.text == "main menu":
-        bot.reply_to(
-            message,
-                """
-Welcome back to EasyGate!""", reply_markup = main_menu_markup())
-    elif message.text == "About Us":
-        bot.reply_to(
-            message,
-            """Welcome to EasyGate!
-            """, reply_markup = main_menu_markup())
-    elif message.text == "Our Services":
-        bot.reply_to(
-            message,
-            """Our Services:
-            """, reply_markup = main_menu_markup())
-    else:
-        bot.reply_to(
-                message,
-                "I don't understand that command. Please use the help command."
-            )
+#         bot.reply_to(
+#         message,
+#         "Please use the button below to access the registration form.",
+#         reply_markup=markup
+#     )
+#     elif message.text == "Directly to Admin":
+#         bot.reply_to(
+#             message,
+#                 """Please send your feedback directly to the admin.""", reply_markup = feedback_markup())
+#     elif message.text == "Bank Transfer":
+#         bot.reply_to(
+#             message,
+#                 """Please transfer the payment to the following bank account:
+#                 Bank Name: CBE
+#                 Account Number: 1000000000000
+#                 Account Name: EasyGate
+#                 Please provide the receipt after payment.""", reply_markup = payment_markup())
+#     elif message.text == "Telebirr":
+#         bot.reply_to(
+#             message,
+#                 """Please transfer the payment to the following Telebirr account:
+#                 Telebirr Number: 0964255107
+#                 Account Name: EasyGate
+#                 Please provide the receipt after payment.""", reply_markup = payment_markup())
+#     elif message.text == "PayPal":
+#         bot.reply_to(
+#             message,
+#                 """Please transfer the payment to the following PayPal account:
+#                 PayPal Email: contact.easygate@gmail.com
+#                 Please provide the receipt after payment.""", reply_markup = payment_markup())
+#     elif message.text == "Already Paid? (Submit receipt)":
+#         bot.reply_to(
+#             message,
+#                 """Please submit the receipt after payment.""", reply_markup = payment_markup())
+#     elif message.text == "Choose Different Payment Method":
+#         bot.reply_to(
+#             message,
+#                 """Please choose a different payment method.""", reply_markup = payment_markup())
+#     elif message.text == "main menu":
+#         bot.reply_to(
+#             message,
+#                 """
+# Welcome back to EasyGate!""", reply_markup = main_menu_markup())
+#     elif message.text == "About Us":
+#         bot.reply_to(
+#             message,
+#             """Welcome to EasyGate!
+#             """, reply_markup = main_menu_markup())
+#     elif message.text == "Our Services":
+#         bot.reply_to(
+#             message,
+#             """Our Services:
+#             """, reply_markup = main_menu_markup())
+#     else:
+#         bot.reply_to(
+#                 message,
+#                 "I don't understand that command. Please use the help command."
+#             )
 
 
 
