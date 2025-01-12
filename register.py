@@ -2,116 +2,116 @@ import os
 from flask import Flask, request
 import telebot
 import logging
-from apscheduler.schedulers.background import BackgroundScheduler
+# from apscheduler.schedulers.background import BackgroundScheduler
 import requests
 import threading
 import time  # Add this line to import the time module
-from flask import Flask, request
+# from flask import Flask, request
 import requests
-from apscheduler.schedulers.background import BackgroundScheduler
+# from apscheduler.schedulers.background import BackgroundScheduler
 # API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
 API_KEY = "7929155173:AAEpswd4oLpvy6P4YaZszPeyFRIn8KteUh8"
 ADMIN_CHAT_ID = "793034140"
-APP_URL = f'https://easygate-registration-bot-34qv.onrender.com/{API_KEY}'
+# APP_URL = f'https://easygate-registration-bot-34qv.onrender.com/{API_KEY}'
 bot = telebot.TeleBot(API_KEY)
 
 bot.remove_webhook()
-bot.set_webhook(url=APP_URL)
+# bot.set_webhook(url=APP_URL)
 
-app = Flask(__name__)
-# Set up logging for debugging
-logging.basicConfig(level=logging.INFO)
-# Health check route
-@app.route('/')
-def home():
-    return "Telegram Bot is running!"
+# app = Flask(__name__)
+# # Set up logging for debugging
+# logging.basicConfig(level=logging.INFO)
+# # Health check route
+# @app.route('/')
+# def home():
+#     return "Telegram Bot is running!"
 
-@app.route(f'/{API_KEY}', methods=['POST'])
-def webhook():
-    json_string = request.get_data().decode('utf-8')
-    update = telebot.types.Update.de_json(json_string)
-    bot.process_new_updates([update])
-    return "OK", 200
+# @app.route(f'/{API_KEY}', methods=['POST'])
+# def webhook():
+#     json_string = request.get_data().decode('utf-8')
+#     update = telebot.types.Update.de_json(json_string)
+#     bot.process_new_updates([update])
+#     return "OK", 200
 
-def start_flask_app():
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+# def start_flask_app():
+#     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
 
-def start_telegram_bot():
-    bot.remove_webhook()
-    bot.set_webhook(url=APP_URL)
+# def start_telegram_bot():
+#     bot.remove_webhook()
+#     bot.set_webhook(url=APP_URL)
 
-    logging.info("Starting Telegram bot...")
-    bot.polling(none_stop=True)
+#     logging.info("Starting Telegram bot...")
+#     bot.polling(none_stop=True)
 
-# Function to periodically send a keep-alive ping
-def periodic_keep_alive():
-    url = "https://easygate-registration-bot-34qv.onrender.com/health"
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            logging.info("Keep-alive ping successful!")
-        else:
-            logging.warning(f"Keep-alive ping failed with status code: {response.status_code}")
-    except requests.RequestException as e:
-        logging.error(f"Error in keep-alive ping: {e}")
-
-
-import time
-from telebot.apihelper import ApiTelegramException
-
-def set_webhook_with_retry(bot, url):
-    while True:
-        try:
-            bot.set_webhook(url=url)
-            print("Webhook set successfully!")
-            break  # Exit the loop if the webhook is set successfully
-        except ApiTelegramException as e:
-            if e.error_code == 429:  # Rate limit exceeded
-                retry_after = int(e.result_json['parameters']['retry_after'])
-                print(f"Rate limit exceeded. Retrying after {retry_after} seconds...")
-                time.sleep(retry_after)
-            else:
-                print(f"Failed to set webhook: {e}")
-                break  # Exit if it's a different error
-
-# Use the function
-set_webhook_with_retry(bot, APP_URL)
+# # Function to periodically send a keep-alive ping
+# def periodic_keep_alive():
+#     url = "https://easygate-registration-bot-34qv.onrender.com/health"
+#     try:
+#         response = requests.get(url)
+#         if response.status_code == 200:
+#             logging.info("Keep-alive ping successful!")
+#         else:
+#             logging.warning(f"Keep-alive ping failed with status code: {response.status_code}")
+#     except requests.RequestException as e:
+#         logging.error(f"Error in keep-alive ping: {e}")
 
 
+# import time
+# from telebot.apihelper import ApiTelegramException
 
-import time
-try:
-    bot.set_webhook(url=APP_URL)
-except telebot.apihelper.ApiTelegramException as e:
-    # Handle the exception (e.g., log the error or retry)
-    print(f"Failed to set webhook: {e}")
+# def set_webhook_with_retry(bot, url):
+#     while True:
+#         try:
+#             bot.set_webhook(url=url)
+#             print("Webhook set successfully!")
+#             break  # Exit the loop if the webhook is set successfully
+#         except ApiTelegramException as e:
+#             if e.error_code == 429:  # Rate limit exceeded
+#                 retry_after = int(e.result_json['parameters']['retry_after'])
+#                 print(f"Rate limit exceeded. Retrying after {retry_after} seconds...")
+#                 time.sleep(retry_after)
+#             else:
+#                 print(f"Failed to set webhook: {e}")
+#                 break  # Exit if it's a different error
+
+# # Use the function
+# set_webhook_with_retry(bot, APP_URL)
 
 
-# Start background tasks
-def start_background_tasks():
-    scheduler = BackgroundScheduler()
-    scheduler.add_job(periodic_keep_alive, 'interval', minutes=5)  # Ping every 5 minutes
-    scheduler.start()
 
-# Main entry point
-if __name__ == "__main__":
-    # Start Flask app in a separate thread
-    flask_thread = threading.Thread(target=start_flask_app, daemon=True)
-    flask_thread.start()
+# import time
+# try:
+#     bot.set_webhook(url=APP_URL)
+# except telebot.apihelper.ApiTelegramException as e:
+#     # Handle the exception (e.g., log the error or retry)
+#     print(f"Failed to set webhook: {e}")
 
-    # Start Telegram bot in a separate thread
-    telegram_thread = threading.Thread(target=start_telegram_bot, daemon=True)
-    telegram_thread.start()
 
-    # Start background tasks for keep-alive
-    start_background_tasks()
+# # Start background tasks
+# def start_background_tasks():
+#     scheduler = BackgroundScheduler()
+#     scheduler.add_job(periodic_keep_alive, 'interval', minutes=5)  # Ping every 5 minutes
+#     scheduler.start()
 
-    # Keep the main thread alive
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        logging.info("Shutting down...")
+# # Main entry point
+# if __name__ == "__main__":
+#     # Start Flask app in a separate thread
+#     flask_thread = threading.Thread(target=start_flask_app, daemon=True)
+#     flask_thread.start()
+
+#     # Start Telegram bot in a separate thread
+#     telegram_thread = threading.Thread(target=start_telegram_bot, daemon=True)
+#     telegram_thread.start()
+
+#     # Start background tasks for keep-alive
+#     start_background_tasks()
+
+#     # Keep the main thread alive
+#     try:
+#         while True:
+#             time.sleep(1)
+#     except KeyboardInterrupt:
+#         logging.info("Shutting down...")
 
 # # Telegram bot handlers
 # @bot.message_handler(commands=['start'])
@@ -853,7 +853,7 @@ def payment_markup():
 
 
 # Start the bot
-# bot.polling(none_stop=True) # i am using webhook so i commented this
+bot.polling(none_stop=True) # i am using webhook so i commented this
 
 
 
