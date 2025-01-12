@@ -19,8 +19,10 @@ bot = telebot.TeleBot(API_KEY)
 
 bot.remove_webhook()
 # bot.set_webhook(url=APP_URL)
+app = Flask(__name__)
+port = int(os.environ.get("PORT", 5000))
+app.run(host="0.0.0.0", port=port)
 
-# app = Flask(__name__)
 # # Set up logging for debugging
 # logging.basicConfig(level=logging.INFO)
 # # Health check route
