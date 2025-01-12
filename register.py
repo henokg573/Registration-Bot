@@ -10,7 +10,7 @@ import time  # Add this line to import the time module
 import requests
 # from apscheduler.schedulers.background import BackgroundScheduler
 # API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
-API_KEY = "7929155173:AAEpswd4oLpvy6P4YaZszPeyFRIn8KteUh8"
+API_KEY = "7759515826:AAEjjGhr8pM7WAJBWP8JG1F-wu85nJck338"
 ADMIN_CHAT_ID = "793034140"
 # APP_URL = f'https://easygate-registration-bot-34qv.onrender.com/{API_KEY}'
 bot = telebot.TeleBot(API_KEY)
@@ -856,13 +856,9 @@ def payment_markup():
 bot.polling(none_stop=True) # i am using webhook so i commented this
 
 
-
-
-
-# # def start_telegram_bot():
+# using long polling 
 # if __name__ == "__main__":
-#     # Start the dummy server in a separate thread
-#     threading.Thread(target=start_dummy_server, daemon=True).start()
+#     print("Bot is polling...")
+#     bot.infinity_polling()
 
-#     # Start the Telegram bot
-#     start_telegram_bot()
+
