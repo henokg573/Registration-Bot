@@ -19,10 +19,55 @@ bot = telebot.TeleBot(API_KEY)
 
 bot.remove_webhook()
 # bot.set_webhook(url=APP_URL)
+API_URL = f"https://api.telegram.org/bot{API_KEY}"
+
+# Flask app
 app = Flask(__name__)
-port = int(os.environ.get("PORT", 8000))
-print(f"Running on port: {port}")
-app.run(host="0.0.0.0", port=port)
+
+@app.route('/')
+def home():
+    return "Bot is running."
+
+def get_updates(offset=None):
+    """Fetch updates from Telegram."""
+    params = {"offset": offset, "timeout": 60}
+    response = requests.get(f"{API_URL}/getUpdates", params=params)
+    return response.json()
+
+def send_message(chat_id, text):
+    """Send a message to a chat."""
+    params = {"chat_id": chat_id, "text": text}
+    requests.post(f"{API_URL}/sendMessage", params=params)
+
+# def bot_main():
+#     """Main function to handle bot updates."""
+#     print("Bot is starting...")
+#     offset = None
+#     while True:
+#         try:
+#             updates = get_updates(offset)
+#             if "result" in updates:
+#                 for update in updates["result"]:
+#                     offset = update["update_id"] + 1
+#                     chat_id = update["message"]["chat"]["id"]
+#                     text = update["message"].get("text", "")
+#                     send_message(chat_id, f"You said: {text}")
+#         except Exception as e:
+#             print(f"Error: {e}")
+#             time.sleep(5)  # Avoid crashing on errors
+
+if __name__ == "__main__":
+    # Get the port from the environment variable (default to 8000)
+    port = int(os.environ.get("PORT", 8000))
+    print(f"Running on port: {port}")
+
+    # Run Flask in a separate thread
+    threading.Thread(target=lambda: app.run(host="0.0.0.0", port=port), daemon=True).start()
+
+    # Run the bot's main loop
+    # bot_main()
+
+
 
 # # Set up logging for debugging
 # logging.basicConfig(level=logging.INFO)
