@@ -300,7 +300,7 @@ Your Gateway to Global Opportunities
 
 🌟 Simplifying Your Path to Success
 From Dreams to Destinations, we’re here to open doors and ensure smooth journeys.
----
+
 We are delighted to have you with us!
 
 At EasyGate, we specialize in making your aspirations achievable, whether in education, travel, or career advancement. Here’s how we can support you:
@@ -311,9 +311,12 @@ At EasyGate, we specialize in making your aspirations achievable, whether in edu
 🏛️ Embassy Appointments and Travel Consultancy
 💻 Online Courses and Proficiency Tests
 
----
+
 
 🔹 Registration Period Open!
+We are on registration for the clients like you, who desires to use our services to be successful in
+your desired career path. 
+
 You can proceed with registration or explore our range of services.
 
 🔹 Need Assistance?
@@ -322,7 +325,7 @@ Type /help for immediate guidance.
 Use /contact to connect with our support team.
 For a detailed guide on using our services, check out /guide.
 Let us simplify the complex and help you reach your goals effortlessly!
----
+
 Thank you for choosing EasyGate. Let’s achieve greatness together!
         """,
         reply_markup=markup,
@@ -467,9 +470,9 @@ At EasyGate, we are dedicated to guiding you through every step of your global j
 
 Stay connected with us on our social media platforms to explore our services further:
 
-- Telegram: @easygate2 or [https://t.me/easygate2](https://t.me/easygate)
-- WhatsApp: 0964255107 or [https://wa.me/0964255107](https://wa.me/0964255107)
-- Email: contact.easygate@gmail.com
+==> Telegram: @easygate2 or [https://t.me/easygate2](https://t.me/easygate)
+==> WhatsApp: 0964255107 or [https://wa.me/0964255107](https://wa.me/0964255107)
+==> Email: contact.easygate@gmail.com
 
 Feel free to contact us via any of the platforms above for more information or to get started!
     """, reply_markup = main_menu_markup())
@@ -544,29 +547,40 @@ Feel free to contact us via any of the platforms above for more information or t
         reply_markup=markup
     )
     elif message.text == "Directly to Admin":
+        markup = InlineKeyboardMarkup()
+        feeback_button = InlineKeyboardButton("Click here to send your feedback directly to the Admin", url="[https://t.me/easygate2](https://t.me/easygate)")
+        markup.add(feeback_button)
         bot.reply_to(
             message,
-                """Please send your feedback directly to the admin.""", reply_markup = feedback_markup())
+                """Please send your feedback directly to the admin using this username""", 
+                reply_markup = feeback_button())
     elif message.text == "Bank Transfer":
         bot.reply_to(
             message,
                 """Please transfer the payment to the following bank account:
                 Bank Name: CBE
-                Account Number: 1000000000000
-                Account Name: EasyGate
+                Account Number: 1000553465994
+                Account Name: Henok Girma
+
+                Bank Name: Awash Bank
+                Account Number: 01320246243200
+                Account Name: Henok Girma
                 Please provide the receipt after payment.""", reply_markup = payment_markup())
     elif message.text == "Telebirr":
         bot.reply_to(
             message,
                 """Please transfer the payment to the following Telebirr account:
                 Telebirr Number: 0964255107
-                Account Name: EasyGate
+                Account Name: Henok Girma
                 Please provide the receipt after payment.""", reply_markup = payment_markup())
-    elif message.text == "PayPal":
+    elif message.text == "Other":
+        markup = InlineKeyboardMarkup()
+        other_button = InlineKeyboardButton("Click here to make the payment by contacting the admin", url="[https://t.me/easygate2](https://t.me/easygate)")
+        markup.add(other_button)
         bot.reply_to(
             message,
-                """Please transfer the payment to the following PayPal account:
-                PayPal Email: contact.easygate@gmail.com""", reply_markup = payment_markup())
+                """Please contact the admin
+                """, reply_markup = other_button())
     elif message.text == "Already Paid? (Submit receipt)": 
         bot.reply_to(
             message,
@@ -574,7 +588,9 @@ Feel free to contact us via any of the platforms above for more information or t
     elif message.text == "Choose Different Payment Method":
         bot.reply_to(
             message,
-                """Please choose a different payment method.""", reply_markup = payment_markup())
+                """Please choose a different payment method.
+                if your preferred choice is not in the list, please contact the admin to make the payment
+                """, reply_markup = payment_markup())
     elif message.text == "main menu":
         bot.reply_to(
             message,
@@ -599,36 +615,36 @@ Feel free to contact us via any of the platforms above for more information or t
                 message,
                 "I don't understand that command. Please use the help command."
             )
-# Handle the feedback submission and forward to admin
-@bot.message_handler(func=lambda message: message.text == "Directly to Admin")
-def handle_direct_to_admin(message):
-    bot.reply_to(
-        message,
-        "Please send your feedback directly to the admin. Your message will be forwarded.",
-        reply_markup=feedback_markup()  # Ensure you have the correct markup
-    )
+# # Handle the feedback submission and forward to admin
+# @bot.message_handler(func=lambda message: message.text == "Directly to Admin")
+# def handle_direct_to_admin(message):
+#     bot.reply_to(
+#         message,
+#         "Please send your feedback directly to the admin. Your message will be forwarded.",
+#         reply_markup=feedback_markup()  # Ensure you have the correct markup
+#     )
     
-    # Register the next step to capture the user's feedback message
-    bot.register_next_step_handler(message, forward_feedback_to_admin)
+#     # Register the next step to capture the user's feedback message
+#     bot.register_next_step_handler(message, forward_feedback_to_admin)
 
 
-def forward_feedback_to_admin(message):
-    user_feedback = message.text
-    user_name = message.from_user.username or "No username"
-    admin_chat_id = "793034140"  # Replace with the admin's chat ID
+# def forward_feedback_to_admin(message):
+#     user_feedback = message.text
+#     user_name = message.from_user.username or "No username"
+#     admin_chat_id = "793034140"  # Replace with the admin's chat ID
 
-    # Create the message that will be sent to the admin
-    feedback_message = (
-        f"New feedback received:\n\n"
-        f"From: @{user_name}\n"
-        f"Message: {user_feedback}"
-    )
+#     # Create the message that will be sent to the admin
+#     feedback_message = (
+#         f"New feedback received:\n\n"
+#         f"From: @{user_name}\n"
+#         f"Message: {user_feedback}"
+#     )
 
-    # Send the feedback message to the admin
-    bot.send_message(admin_chat_id, feedback_message)
+#     # Send the feedback message to the admin
+#     bot.send_message(admin_chat_id, feedback_message)
 
     # Confirm to the user that their feedback has been sent
-    bot.reply_to(message, "Your feedback has been sent to the admin. Thank you!")
+    # bot.reply_to(message, "Your feedback has been sent to the admin. Thank you!")
 
 
 
@@ -892,7 +908,7 @@ def payment_markup():
     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     btn1 = telebot.types.KeyboardButton('Bank Transfer')
     btn2 = telebot.types.KeyboardButton('Telebirr')
-    btn3 = telebot.types.KeyboardButton('PayPal')
+    btn3 = telebot.types.KeyboardButton('Other')
     btn4 = telebot.types.KeyboardButton('Already Paid? (Submit receipt)')
     btn5 = telebot.types.KeyboardButton('Choose Different Payment Method')
     btn6 = telebot.types.KeyboardButton('main menu')
@@ -904,12 +920,10 @@ def payment_markup():
 
 # Start the bot
 bot.polling(none_stop=True) # i am using webhook so i commented this
+print(f"Flask app running on port: {port}")
 
 
 # using long polling 
 # if __name__ == "__main__":
 #     print("Bot is polling...")
 #     bot.infinity_polling()
-
-
-print(f"Flask app running on port: {port}")
