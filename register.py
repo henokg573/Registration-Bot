@@ -548,12 +548,17 @@ Feel free to contact us via any of the platforms above for more information or t
     )
     elif message.text == "Directly to Admin":
         markup = InlineKeyboardMarkup()
-        feeback_button = InlineKeyboardButton("Click here to send your feedback directly to the Admin", url="[https://t.me/easygate2](https://t.me/easygate)")
+        feeback_button = InlineKeyboardButton(
+        "Click here to send your feedback directly to the Admin", 
+        url="https://t.me/easygate2"
+    )
         markup.add(feeback_button)
         bot.reply_to(
-            message,
-                """Please send your feedback directly to the admin using this username""", 
-                reply_markup = feeback_button())
+        message,
+        "Please send your feedback directly to the admin using this username", 
+        reply_markup=markup  # Pass the InlineKeyboardMarkup object here
+    )
+
     elif message.text == "Bank Transfer":
         bot.reply_to(
             message,
@@ -575,12 +580,17 @@ Feel free to contact us via any of the platforms above for more information or t
                 Please provide the receipt after payment.""", reply_markup = payment_markup())
     elif message.text == "Other":
         markup = InlineKeyboardMarkup()
-        other_button = InlineKeyboardButton("Click here to make the payment by contacting the admin", url="[https://t.me/easygate2](https://t.me/easygate)")
+        other_button = InlineKeyboardButton(
+        "Click here to make the payment by contacting the admin", 
+        url="https://t.me/easygate2"
+    )
         markup.add(other_button)
         bot.reply_to(
-            message,
-                """Please contact the admin
-                """, reply_markup = other_button())
+        message,
+        """Please contact the admin
+        """, 
+        reply_markup=markup  # Pass the InlineKeyboardMarkup object here
+    )
     elif message.text == "Already Paid? (Submit receipt)": 
         bot.reply_to(
             message,
