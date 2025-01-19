@@ -511,8 +511,14 @@ Feel free to contact us via any of the platforms above for more information or t
     elif message.text == "Feedback":
         bot.reply_to(
         message,
-            """We value your feedback!. you can directly send your feedbacks to Admin
-            or you can send your feedbacks using our Google form link: please choose what suits you well"""
+            """We value your feedback!
+
+You can send your feedback in one of two ways:
+
+1. Directly to our Admin via the bot.  
+2. Submit your feedback using our Google Form link.
+
+Please choose the option that suits you best."""
             , reply_markup = feedback_markup())
     elif message.text == "Already Registered?":
         bot.reply_to(
