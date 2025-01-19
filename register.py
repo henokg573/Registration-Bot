@@ -470,8 +470,8 @@ At EasyGate, we are dedicated to guiding you through every step of your global j
 
 Stay connected with us on our social media platforms to explore our services further:
 
-==> Telegram: @easygate2 or [https://t.me/easygate2](https://t.me/easygate)
-==> WhatsApp: 0964255107 or [https://wa.me/0964255107](https://wa.me/0964255107)
+==> Telegram: @easygate2 or [https://t.me/easygate2]
+==> WhatsApp: 0964255107 or [https://wa.me/0964255107]
 ==> Email: contact.easygate@gmail.com
 
 Feel free to contact us via any of the platforms above for more information or to get started!
@@ -712,9 +712,8 @@ def collect_email(message):
         bot.register_next_step_handler(message, collect_email)
         return
     user_data['email'] = email
-    bot.send_message(chat_id, """Thank you! Now, please select a payment method or submit your receipt.
-                     and write your name on the file format or when you send a file, write your name on it or rename the file as your name.
-                     for example, JohnDoe.jp for images or JohnDoe.pdf for pdf files""", reply_markup=payment_markup())
+    bot.send_message(chat_id, """Thank you! Now, please select a payment method or submit your receipt as pdf or image file
+                     """, reply_markup=payment_markup())
 
 
 
