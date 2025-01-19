@@ -529,11 +529,25 @@ Feel free to contact us via any of the platforms above for more information or t
         reply_markup=markup
     )
 
+    # elif message.text == "Directly on Telegram":
+    #     bot.reply_to(
+    #         message,
+    #             """please use this username
+    #             @easygate2 or 0964255107 to register""", reply_markup = register_markup())
+        
+
     elif message.text == "Directly on Telegram":
+        markup = InlineKeyboardMarkup()
+        register_button = InlineKeyboardButton(
+        "Click here to send your feedback directly to the Admin", 
+        url="https://t.me/easygate2"
+    )
+        markup.add(register_button)
         bot.reply_to(
-            message,
-                """please use this username
-                @easygate2 or 0964255107 to register""", reply_markup = register_markup())
+        message,
+        "Please send your feedback directly to the admin using this username", 
+        reply_markup=markup  # Pass the InlineKeyboardMarkup object here
+    )
     elif message.text == "Bot Registration":
         start_registration(message)
     elif message.text == "Google Form feedback":
