@@ -326,6 +326,10 @@ Use /contact to connect with our support team.
 For a detailed guide on using our services, check out /guide.
 Let us simplify the complex and help you reach your goals effortlessly!
 
+Thank you for visiting us! We are currently in the registration phase.
+📋 Please use the options below to register or check out our services.
+We look forward to serving you once the registration process is complete!
+
 Thank you for choosing EasyGate. Let’s achieve greatness together!
         """,
         reply_markup=markup,
@@ -884,7 +888,13 @@ def handle_admin_response(call):
     if call.data.startswith('verify_'):
         user_details = pending_verifications.pop(user_id)
         user_data[user_id] = user_details  # Store verified user data
-        bot.send_message(user_id, "✅ Your payment has been verified! Please join our Telegram channel using the link below:")
+        bot.send_message(user_id, """
+✅ Your payment has been verified!
+
+Thank you for completing the payment. Please note:
+We are currently in the registration phase and will start providing services once the registration process is complete.
+
+In the meantime, please join our Telegram channel using the link below to stay updated:""")
         
          # Create an inline keyboard with the channel link
         markup = telebot.types.InlineKeyboardMarkup()
