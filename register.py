@@ -903,7 +903,7 @@ In the meantime, please join our Telegram channel using the link below to stay u
         
          # Create an inline keyboard with the channel link
         markup = telebot.types.InlineKeyboardMarkup()
-        button = telebot.types.InlineKeyboardButton("Join our official Telegram channel", url="https://t.me/+YxqOfA6-sFE0ODhk")
+        button = telebot.types.InlineKeyboardButton("please click this link to use our services", url="https://t.me/easygate2")
         markup.add(button)
 
         # Send Telegram channel link
