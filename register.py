@@ -549,7 +549,7 @@ Please choose the option that suits you best."""
     elif message.text == "Directly on Telegram":
         markup = InlineKeyboardMarkup()
         register_button = InlineKeyboardButton(
-        "Click here to send your feedback directly to the Admin", 
+        "please use this link to contact the Admin and register to get services", 
         url="https://t.me/easygate2"
     )
         markup.add(register_button)
@@ -586,7 +586,8 @@ Please choose the option that suits you best."""
     elif message.text == "Bank Transfer":
         bot.reply_to(
             message,
-                """Please transfer the payment to the following bank account:
+                """
+                Please transfer the payment to the following bank account:
                 Bank Name: CBE
                 Account Number: 1000553465994
                 Account Name: Henok Girma
@@ -594,7 +595,11 @@ Please choose the option that suits you best."""
                 Bank Name: Awash Bank
                 Account Number: 01320246243200
                 Account Name: Henok Girma
-                Please provide the receipt after payment.""", reply_markup = payment_markup())
+                
+        The registration fee for our service is 200 Birr. However, this amount will be deducted from your total service fee, meaning you won’t need to pay the 200 Birr separately during registration. 
+
+                Please provide the receipt after payment.
+                """, reply_markup = payment_markup())
     elif message.text == "Telebirr":
         bot.reply_to(
             message,
@@ -898,7 +903,7 @@ In the meantime, please join our Telegram channel using the link below to stay u
         
          # Create an inline keyboard with the channel link
         markup = telebot.types.InlineKeyboardMarkup()
-        button = telebot.types.InlineKeyboardButton("Join our Telegram channel", url="https://t.me/easygate")
+        button = telebot.types.InlineKeyboardButton("Join our official Telegram channel", url="https://t.me/+YxqOfA6-sFE0ODhk")
         markup.add(button)
 
         # Send Telegram channel link
