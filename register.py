@@ -899,11 +899,11 @@ def handle_admin_response(call):
 Thank you for completing the payment. Please note:
 We are currently in the registration phase and will start providing services once the registration process is complete.
 
-In the meantime, please join our Telegram channel using the link below to stay updated:""")
+In the meantime, please join our Telegram bot using the link below to stay updated and register for services you want to use:""")
         
          # Create an inline keyboard with the channel link
         markup = telebot.types.InlineKeyboardMarkup()
-        button = telebot.types.InlineKeyboardButton("please click this link to use our services", url="https://t.me/easygate2")
+        button = telebot.types.InlineKeyboardButton("please click this link to use our services", url="https://t.me/henokAntu_bot")
         markup.add(button)
 
         # Send Telegram channel link
