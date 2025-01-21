@@ -698,7 +698,7 @@ In the meantime, please join our Telegram bot using the link below to stay updat
         
          # Create an inline keyboard with the channel link
         markup = telebot.types.InlineKeyboardMarkup()
-        button = telebot.types.InlineKeyboardButton("please click this link to use our services", url="https://t.me/henokAntu_bot")
+        button = telebot.types.InlineKeyboardButton("please click this link to use our services", url="https://t.me/EasyGate_Official_Bot") # Add the channel link
         markup.add(button)
 
         # Send Telegram channel link
