@@ -69,6 +69,215 @@ if __name__ == "__main__":
 
 
 
+# # Set up logging for debugging
+# logging.basicConfig(level=logging.INFO)
+# # Health check route
+# @app.route('/')
+# def home():
+#     return "Telegram Bot is running!"
+
+# @app.route(f'/{API_KEY}', methods=['POST'])
+# def webhook():
+#     json_string = request.get_data().decode('utf-8')
+#     update = telebot.types.Update.de_json(json_string)
+#     bot.process_new_updates([update])
+#     return "OK", 200
+
+# def start_flask_app():
+#     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
+# def start_telegram_bot():
+#     bot.remove_webhook()
+#     bot.set_webhook(url=APP_URL)
+
+#     logging.info("Starting Telegram bot...")
+#     bot.polling(none_stop=True)
+
+# # Function to periodically send a keep-alive ping
+# def periodic_keep_alive():
+#     url = "https://easygate-registration-bot-34qv.onrender.com/health"
+#     try:
+#         response = requests.get(url)
+#         if response.status_code == 200:
+#             logging.info("Keep-alive ping successful!")
+#         else:
+#             logging.warning(f"Keep-alive ping failed with status code: {response.status_code}")
+#     except requests.RequestException as e:
+#         logging.error(f"Error in keep-alive ping: {e}")
+
+
+# import time
+# from telebot.apihelper import ApiTelegramException
+
+# def set_webhook_with_retry(bot, url):
+#     while True:
+#         try:
+#             bot.set_webhook(url=url)
+#             print("Webhook set successfully!")
+#             break  # Exit the loop if the webhook is set successfully
+#         except ApiTelegramException as e:
+#             if e.error_code == 429:  # Rate limit exceeded
+#                 retry_after = int(e.result_json['parameters']['retry_after'])
+#                 print(f"Rate limit exceeded. Retrying after {retry_after} seconds...")
+#                 time.sleep(retry_after)
+#             else:
+#                 print(f"Failed to set webhook: {e}")
+#                 break  # Exit if it's a different error
+
+# # Use the function
+# set_webhook_with_retry(bot, APP_URL)
+
+
+
+# import time
+# try:
+#     bot.set_webhook(url=APP_URL)
+# except telebot.apihelper.ApiTelegramException as e:
+#     # Handle the exception (e.g., log the error or retry)
+#     print(f"Failed to set webhook: {e}")
+
+
+# # Start background tasks
+# def start_background_tasks():
+#     scheduler = BackgroundScheduler()
+#     scheduler.add_job(periodic_keep_alive, 'interval', minutes=5)  # Ping every 5 minutes
+#     scheduler.start()
+
+# # Main entry point
+# if __name__ == "__main__":
+#     # Start Flask app in a separate thread
+#     flask_thread = threading.Thread(target=start_flask_app, daemon=True)
+#     flask_thread.start()
+
+#     # Start Telegram bot in a separate thread
+#     telegram_thread = threading.Thread(target=start_telegram_bot, daemon=True)
+#     telegram_thread.start()
+
+#     # Start background tasks for keep-alive
+#     start_background_tasks()
+
+#     # Keep the main thread alive
+#     try:
+#         while True:
+#             time.sleep(1)
+#     except KeyboardInterrupt:
+#         logging.info("Shutting down...")
+
+# # Telegram bot handlers
+# @bot.message_handler(commands=['start'])
+# def send_welcome(message):
+#     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+#     btn1 = telebot.types.KeyboardButton('About Us')
+#     btn2 = telebot.types.KeyboardButton('Our Services')
+#     btn3 = telebot.types.KeyboardButton('Continue to Register')
+#     btn4 = telebot.types.KeyboardButton('Feedback')
+#     markup.add(btn1, btn2, btn3, btn4)
+
+#     bot.reply_to(message, "👋 Hi there! Welcome to EasyGate!", reply_markup=markup)
+#     if message.text == "Continue to Register":
+#         bot.reply_to(
+#         message,
+#             """To register, we offer three ways:
+
+#         1. You can register through our Google Form link.
+#         2. You can contact us directly and register.
+#         3. You can register through our bot.
+
+#         Please choose one of the options below to continue.""", reply_markup = register_markup())
+#     elif message.text == "Feedback":
+#         bot.reply_to(
+#         message,
+#             """We value your feedback! You can send your feedback in one of two ways:
+#             1. Using our Google Form link.
+#             2. Directly to our Admin via the bot.
+#             """ , reply_markup = feedback_markup())
+#     elif message.text == "Already Registered?":
+#         bot.reply_to(
+#         message,
+#             """If you have already registered, please continue to the payment method""", reply_markup = payment_markup())
+#     elif message.text == "Google Form":
+#         markup = telebot.types.InlineKeyboardMarkup()
+#         form_button = telebot.types.InlineKeyboardButton("Click here to fill out the Google Form", url="https://forms.gle/pwapv5YrnVn81KWa6")
+#         markup.add(form_button)
+    
+#         bot.reply_to(
+#         message,
+#         "Please use the button below to access the registration form.",
+#         reply_markup=markup
+#     )
+#     elif message.text == "Directly on Telegram":
+#         bot.reply_to(
+#             message,
+#                 """Please use this username
+#                 @easygate2 or 0964255107 to register""", reply_markup = register_markup())
+#     elif message.text == "Bot Registration":
+#         start_registration(message)
+#     elif message.text == "Google Form feedback":
+#         markup = telebot.types.InlineKeyboardMarkup()
+#         form_button = telebot.types.InlineKeyboardButton("Click here to fill out the Google Form", url="https://forms.gle/RqPgyEHv5iSuQVav7")
+#         markup.add(form_button)
+    
+#         bot.reply_to(
+#         message,
+#         "Please use the button below to access the registration form.",
+#         reply_markup=markup
+#     )
+#     elif message.text == "Directly to Admin":
+#         bot.reply_to(
+#             message,
+#                 """Please send your feedback directly to the admin.""", reply_markup = feedback_markup())
+#     elif message.text == "Bank Transfer":
+#         bot.reply_to(
+#             message,
+#                 """Please transfer the payment to the following bank account:
+#                 Bank Name: CBE
+#                 Account Number: 1000000000000
+#                 Account Name: EasyGate
+#                 Please provide the receipt after payment.""", reply_markup = payment_markup())
+#     elif message.text == "Telebirr":
+#         bot.reply_to(
+#             message,
+#                 """Please transfer the payment to the following Telebirr account:
+#                 Telebirr Number: 0964255107
+#                 Account Name: EasyGate
+#                 Please provide the receipt after payment.""", reply_markup = payment_markup())
+#     elif message.text == "PayPal":
+#         bot.reply_to(
+#             message,
+#                 """Please transfer the payment to the following PayPal account:
+#                 PayPal Email: contact.easygate@gmail.com
+#                 Please provide the receipt after payment.""", reply_markup = payment_markup())
+#     elif message.text == "Already Paid? (Submit receipt)":
+#         bot.reply_to(
+#             message,
+#                 """Please submit the receipt after payment.""", reply_markup = payment_markup())
+#     elif message.text == "Choose Different Payment Method":
+#         bot.reply_to(
+#             message,
+#                 """Please choose a different payment method.""", reply_markup = payment_markup())
+#     elif message.text == "main menu":
+#         bot.reply_to(
+#             message,
+#                 """
+# Welcome back to EasyGate!""", reply_markup = main_menu_markup())
+#     elif message.text == "About Us":
+#         bot.reply_to(
+#             message,
+#             """Welcome to EasyGate!
+#             """, reply_markup = main_menu_markup())
+#     elif message.text == "Our Services":
+#         bot.reply_to(
+#             message,
+#             """Our Services:
+#             """, reply_markup = main_menu_markup())
+#     else:
+#         bot.reply_to(
+#                 message,
+#                 "I don't understand that command. Please use the help command."
+#             )
+
+
+
 
 
 # Define the bot's handlers
