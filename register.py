@@ -431,6 +431,7 @@ def send_guide(message):
         @easygate2
         0964255107
         contact.easygate@gmail.com
+        WhatsApp: +251964255107 or [https://wa.me/+251964255107]
         for help, use this /help
         to start using this service, use this /start""",reply_markup = main_menu_markup())
     if message.text == "Continue to Register":
@@ -475,7 +476,7 @@ At EasyGate, we are dedicated to guiding you through every step of your global j
 Stay connected with us on our social media platforms to explore our services further:
 
 ==> Telegram: @easygate2 or [https://t.me/easygate2]
-==> WhatsApp: 0964255107 or [https://wa.me/0964255107]
+==> WhatsApp: +251964255107 or [https://wa.me/+251964255107]
 ==> Email: contact.easygate@gmail.com
 
 Feel free to contact us via any of the platforms above for more information or to get started!
@@ -645,7 +646,7 @@ At EasyGate, we're dedicated to guiding you through every step of your global jo
 Stay connected with us on our social media platforms to explore our services further:
 
 Telegram: @easygate2
-WhatsApp: 0964255107
+WhatsApp: +251964255107
 Email: contact.easygate@gmail.com
 Feel free to contact us via any of the platforms above for more information or to get started!
 """, reply_markup = main_menu_markup())
