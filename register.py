@@ -10,6 +10,9 @@ import threading
 import time  # Add this line to import the time module
 # from flask import Flask, request
 import requests
+import telebot
+import json
+import random
 # from apscheduler.schedulers.background import BackgroundScheduler
 # API_KEY = "7759515826:AAGOtQ4V-ZVeq_caHh9uYynSQ1UX9THdcq0"
 API_KEY = "7759515826:AAEjjGhr8pM7WAJBWP8JG1F-wu85nJck338"
@@ -66,6 +69,49 @@ if __name__ == "__main__":
 
     # Run the bot's main loop
     # bot_main()
+
+
+
+
+
+# Function to generate a 7-digit unique ID
+def generate_unique_id():
+    return str(random.randint(1000000, 9999999))
+
+# Store verified user data in a file (users_data.json)
+def store_verified_user(user_id, unique_id):
+    data = {}
+    try:
+        with open('users_data.json', 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        pass  # If the file doesn't exist, we'll create it later
+
+    data[str(user_id)] = unique_id  # Store user_id and unique_id as a dictionary
+
+    with open('users_data.json', 'w') as file:
+        json.dump(data, file, indent=4)
+
+# Admin verifies user and stores data
+@bot.message_handler(commands=['verify'])
+def verify_user(message):
+    user_id = message.from_user.id
+    unique_id = generate_unique_id()
+    
+    # Store user data in the file
+    store_verified_user(user_id, unique_id)
+    
+    bot.reply_to(message, f"User verified! Your unique ID is: {unique_id}")
+    
+    # Send the official bot link to the user
+    bot.send_message(user_id, f"You are verified! Use this link to start the official bot:\n"
+                              f"https://t.me/@EasyGate_Official_Bot?start={unique_id}")
+
+# Admin command to verify users
+@bot.message_handler(commands=['admin_verify'])
+def admin_verify_user(message):
+    # Handle admin verification logic, this might involve checking receipts, etc.
+    pass
 
 
 
