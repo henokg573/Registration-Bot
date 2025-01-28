@@ -493,7 +493,15 @@ Feel free to contact us via any of the platforms above for more information or t
     else:
         bot.reply_to(
                 message,
-                "I don't understand that command. Please use the help command."
+                """
+I'm sorry, I didn't understand that input or command.
+    Please note: To interact with the bot, use the buttons provided. We do not accept inputs from the keyboard. USE ONLY BUTTONS PROVIDED
+    Here’s how to use the bot:
+             - Type '/start' to begin
+             - Type '/help' to see available commands
+             - Type '/guide' to learn how to use this bot
+             
+                """
             )
 # # Handle the feedback submission and forward to admin
 # @bot.message_handler(func=lambda message: message.text == "Directly to Admin")
