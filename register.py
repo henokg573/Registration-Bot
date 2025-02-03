@@ -447,6 +447,7 @@ NOTICE! PLEASE SAVE YOUR RECEIPT BECAUSE YOU WILL HAVE TO PROVIDE THE RECEIPT IN
                 """Please transfer the payment to the following Telebirr account:
                 Telebirr Number: 0964255107
                 Account Name: Henok Girma
+NOTICE! PLEASE SAVE YOUR RECEIPT BECAUSE YOU WILL HAVE TO PROVIDE THE RECEIPT IN THE FUTURE
                 Please provide the receipt after payment.""", reply_markup = payment_markup())
     elif message.text == "Other":
         markup = InlineKeyboardMarkup()
