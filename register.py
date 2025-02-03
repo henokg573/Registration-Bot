@@ -438,7 +438,7 @@ Please choose the option that suits you best."""
                 Account Name: Henok Girma
                 
         The registration fee for our service is 200 Birr. However, this amount will be deducted from your total service fee, meaning you won’t need to pay the 200 Birr separately during registration. 
-
+NOTICE! PLEASE SAVE YOUR RECEIPT BECAUSE YOU WILL HAVE TO PROVIDE THE RECEIPT IN THE FUTURE
                 Please provide the receipt after payment.
                 """, reply_markup = payment_markup())
     elif message.text == "Telebirr":
@@ -493,7 +493,7 @@ Feel free to contact us via any of the platforms above for more information or t
     else:
         bot.reply_to(
                 message,
-                "I don't understand that command. Please use the help command."
+                "I don't understand that command. Please use the help command.", reply_markup = main_menu_markup()
             )
 # # Handle the feedback submission and forward to admin
 # @bot.message_handler(func=lambda message: message.text == "Directly to Admin")
