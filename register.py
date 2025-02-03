@@ -490,12 +490,11 @@ WhatsApp: +251964255107
 Email: contact.easygate@gmail.com
 Feel free to contact us via any of the platforms above for more information or to get started!
 """, reply_markup = main_menu_markup())
+        
     else:
         bot.reply_to(
                 message,
-<<<<<<< HEAD
-                "I don't understand that command. Please use the help command.", reply_markup = main_menu_markup()
-=======
+
                 """
 I'm sorry, I didn't understand that input or command.
     Please note: To interact with the bot, use the buttons provided. We do not accept inputs from the keyboard. USE ONLY BUTTONS PROVIDED
@@ -504,9 +503,7 @@ I'm sorry, I didn't understand that input or command.
              - Type '/help' to see available commands
              - Type '/guide' to learn how to use this bot
              
-                """
->>>>>>> cb13d25912a1b8c9cad278d3f4da0815d34ea15e
-            )
+                """, reply_markup = main_menu_markup())
 # # Handle the feedback submission and forward to admin
 # @bot.message_handler(func=lambda message: message.text == "Directly to Admin")
 # def handle_direct_to_admin(message):
